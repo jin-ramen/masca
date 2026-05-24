@@ -33,11 +33,61 @@
   --font-primary: var(--font-montserrat), sans-serif;
   --font-secondary: var(--font-crimson), serif;
   --font-accent: var(--font-brusher), cursive;
+
+  --text-h1: clamp(2.25rem, 1.909rem + 1.705vw, 3rem);    /* 36px mobile -> 48px desktop */
+  --text-h2: clamp(1.5rem, 1.159rem + 1.705vw, 2.25rem);  /* 24px mobile -> 36px desktop */
+  --text-h3: clamp(0.75rem, 0.409rem + 1.705vw, 1.5rem);  /* 12px mobile -> 24px desktop */
+  --text-h4: clamp(0.5rem, 0.159rem + 1.705vw, 1.25rem);  /* 8px mobile -> 20px desktop */
+  --text-body: clamp(0.875rem, 0.818rem + 0.284vw, 1rem);        /* 14px mobile -> 16px desktop */
+  --text-body-sm: clamp(0.8125rem, 0.784rem + 0.142vw, 0.875rem); /* 13px mobile -> 14px desktop */
+  --text-caption: 0.75rem;  /* 12px constant */
+  --text-code: 0.75rem;     /* 12px constant */
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;   /* Used for your buttons and form fields */
+  --radius-lg: 12px;  /* Overrides Tailwind's default 8px */
+  --radius-xl: 20px;  /* Adds your custom 20px structural token */
+  --radius-pill: 999px; /* Replaces 'full' with your 'pill' token */
 }
 
-/* Base resets or fallback styling if needed */
-body {
+
+@layer base {
+/* Universal Reset Defaults */
+html, body {
   background-color: var(--color-white);
   color: var(--color-black);
-  font-family: var(--font-secondary);
+  font-family: var(--font-primary);
+  font-size: var(--text-body);        /* 16px base font size */
+  line-height: 1.5;                   /* Balanced vertical alignment spacing */
+}
+
+h1, h2, h3 {
+  /* color: var(--color-blue-600);        */
+  line-height: 1.2;                   
+}
+
+h1 { font-size: var(--text-h1); font-weight: 700; }
+h2 { font-size: var(--text-h2); font-weight: 700; }
+h3 { font-size: var(--text-h3); font-weight: 600; }
+
+h4 { 
+  color: var(--color-blue-600);       
+  line-height: 1.2;       
+  font-size: var(--text-h4); 
+  font-weight: 600; 
+}
+
+/* Paragraph Defaults (Inherits font-family and font-size from body) */
+p {
+  color: var(--color-black);
+  line-height: 1.6;                   /* Keeps looser vertical reading rhythm */
+}
+}
+
+.eyebrow {
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
