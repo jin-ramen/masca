@@ -98,4 +98,15 @@ p {
   text-transform: uppercase;
 }
 
+.buku-latihan {
+  background-color: #FFFEF8;
+  background-image:
+    /* red vertical margin line at ~2rem */
+    linear-gradient(to right, transparent 6rem, #E89090 6rem, #E89090 6.125rem, transparent 6.125rem),
+    /* blue horizontal lines, 0.5rem (8mm-ish) spacing */
+    repeating-linear-gradient(transparent, transparent 1.9375rem, #A8C8E8 1.9375rem, #A8C8E8 2rem);
+  background-size: 100% 100%, 100% 2rem;
+  background-repeat: no-repeat, repeat;
+}
+
 

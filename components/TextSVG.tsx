@@ -165,6 +165,7 @@ const JoinUs = () => (
     version="1.1"
     viewBox="262 182 182 64"
     style={{ height: "1.5em", width: "auto", overflow: "visible", verticalAlign: "baseline" }}
+    className="inline align-baseline h-[1em] w-auto"
   >
     <g
       className="stroke-red-600"
