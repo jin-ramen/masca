@@ -33,17 +33,17 @@ export default function BukuLatihanSection() {
   }, { scope: sectionRef })
 
   const today = new Date().toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
   });
 
   return (
-    <section ref={sectionRef} className="relative bg-[#FFFEF8]">
+    <section ref={sectionRef} className="relative bg-[#FFFEF8] font-accent">
 
       {/* Header */}
       <div
-        className="relative w-full h-16 border-b-2 border-[#A8C8E8]"
+        className="relative w-full h-24 border-b-2 border-[#A8C8E8]"
         style={{
           backgroundImage:
             "linear-gradient(to right, transparent clamp(2rem, 8vw, 6rem), #E89090 clamp(2rem, 8vw, 6rem), #E89090 calc(clamp(2rem, 8vw, 6rem) + 0.125rem), transparent calc(clamp(2rem, 8vw, 6rem) + 0.125rem))",
@@ -51,10 +51,10 @@ export default function BukuLatihanSection() {
         }}
       >
         <div className="flex h-full items-center justify-between px-30 pr-5 text-sm text-gray-600">
-          <h1 className="font-base text-gray-700">
+          <h1 className="text-gray-700">
             Our Sponsors
           </h1>
-          <span className="text-gray-700">
+          <span className="text-gray-700 text-2xl md:text-3xl">
             {today}
           </span>
         </div>

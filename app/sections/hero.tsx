@@ -13,23 +13,25 @@ gsap.registerPlugin(DrawSVGPlugin);
 
 export default function HeroSection() {
   return (
-    <section
-    className="
-        grid gap-16 px-8 md:px-16 lg:px-24 xl:px-32 2xl:px-40 min-h-screen bg-blue-600
-        grid-cols-1 grid-rows-[1fr_auto_2fr] [grid-template-areas:'.'_'main'_'stats']
-        md:grid-cols-2 md:grid-rows-[1fr_auto_2fr] md:[grid-template-areas:'._.'_'main_event'_'stats_.']
-    "
-    >
-      <div className="[grid-area:main]">
-          <MainContent />
-      </div>
+    <section className="bg-blue-600">
+      <div
+      className="
+          container grid gap-16 min-h-screen
+          grid-cols-1 grid-rows-[1fr_auto_2fr] [grid-template-areas:'.'_'main'_'stats']
+          md:grid-cols-2 md:grid-rows-[1fr_auto_2fr] md:[grid-template-areas:'._.'_'main_event'_'stats_.']
+      "
+      >
+        <div className="[grid-area:main]">
+            <MainContent />
+        </div>
 
-      <div className="[grid-area:stats]">
-          <Statistic />
-      </div>
+        <div className="[grid-area:stats]">
+            <Statistic />
+        </div>
 
-      <div className="hidden md:inline-flex md:[grid-area:event] md:justify-self-center md:self-center">
-          <UpcomingEvent />
+        <div className="hidden md:inline-flex md:[grid-area:event] md:justify-self-center md:self-center">
+            <UpcomingEvent />
+        </div>
       </div>
     </section>
   );

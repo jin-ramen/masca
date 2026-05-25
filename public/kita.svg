@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer2">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 8.0464662,5.8150932 c 0,0 -4.4655726,15.1807118 -1.1833037,11.6639958 3.3132515,-3.549912 5.3755795,-7.6745713 1.3861559,-3.85419 -3.3905102,3.246845 1.7242426,6.119371 3.5161026,3.820381 1.79186,-2.298991 1.927095,-4.699407 1.927095,-4.699407"
+       id="path1" />
+    <ellipse
+       style="opacity:0.611;fill:none;stroke:#000000;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:0.194539"
+       id="path2"
+       cx="14.334881"
+       cy="9.770709"
+       rx="0.81140834"
+       ry="0.67617363" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 13.624899,12.543021 c 0,0 -0.879026,7.877423 1.656625,5.341772 2.535651,-2.535652 3.482294,-4.327511 3.482294,-4.327511"
+       id="path3" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+       d="M 15.450567,9.6354743 22.482773,9.128344"
+       id="path4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 18.899053,5.8489018 c 0,0 -0.702707,16.3290012 1.521391,12.8134902 2.096138,-3.313251 2.637077,-4.496554 2.637077,-4.496554"
+       id="path5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+       d="m 28.196442,13.962985 c 0,0 -2.87374,-2.670885 -4.800834,-0.304278 -1.927095,2.366608 1.419964,3.583721 2.670886,2.096139 1.25092,-1.487582 1.690433,-3.921807 1.690433,-3.921807 0,0 -1.352347,8.012657 0.912836,6.186988 2.26518,-1.825669 3.820379,-4.631789 3.820379,-4.631789"
+       id="path6" />
+  </g>
+</svg>

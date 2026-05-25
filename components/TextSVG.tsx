@@ -260,5 +260,43 @@ const Marking = () => (
   </svg>
 );
 
+const Kita = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    viewBox="2 3 33 18"
+    className="w-full h-auto overflow-visible"
+  >
+    <g
+      className="stroke-yellow-500"
+      fill="none"
+      fillOpacity="1"
+      strokeDasharray="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity="1"
+      strokeWidth="1.587"
+    >
+      <path
+        className="kita"
+        d="M8.046 5.815S3.581 20.995 6.863 17.48c3.313-3.55 5.376-7.674 1.386-3.854-3.39 3.247 1.725 6.12 3.516 3.82 1.792-2.299 1.928-4.7 1.928-4.7"
+      ></path>
+      <ellipse className="kita" cx="14.335" cy="9.771" rx="0.811" ry="0.676"></ellipse>
+      <path
+        className="kita"
+        d="M13.625 12.543s-.88 7.877 1.657 5.342c2.535-2.536 3.482-4.328 3.482-4.328"
+      ></path>
+      <path className="kita" d="m15.45 9.635 7.033-.507"></path>
+      <path
+        className="kita"
+        d="M18.9 5.849s-.704 16.329 1.52 12.813c2.097-3.313 2.638-4.496 2.638-4.496"
+      ></path>
+      <path
+        className="kita"
+        d="M28.196 13.963s-2.873-2.67-4.8-.304 1.42 3.583 2.67 2.096 1.69-3.922 1.69-3.922-1.351 8.013.914 6.187 3.82-4.632 3.82-4.632"
+      ></path>
+    </g>
+  </svg>
+)
 
-export { InAustralia, JoinUs, Marking };
+export { InAustralia, JoinUs, Marking, Kita };

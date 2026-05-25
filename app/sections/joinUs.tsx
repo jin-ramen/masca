@@ -32,16 +32,18 @@ export default function JoinUsSection() {
   }, { scope: sectionRef })
 
   return (
-    <section ref={sectionRef} className="grid grid-cols-[2fr_1fr] gap-16 py-32 px-8 md:px-16 lg:px-24 xl:px-32 bg-yellow-500">
-      <div className="flex flex-col gap-4 col-1">
-        <span className="eyebrow text-red-600">Membership is free</span>
-        <span className="title text-blue-600">
-          Jom <JoinUs /> ⸺ the community is waiting. 
-        </span>
-      </div>
+    <section ref={sectionRef} className="bg-yellow-500">
+      <div className="container grid grid-cols-[2fr_1fr] gap-16 py-32">
+        <div className="flex flex-col gap-4 col-1">
+          <span className="eyebrow text-red-600">Membership is free</span>
+          <span className="title text-blue-600">
+            Jom <JoinUs /> ⸺ the community is waiting.
+          </span>
+        </div>
 
-      <div className="col-2 justify-self-end self-center">
-        <Button className="px-8">Become a Member <span>&rarr;</span></Button>
+        <div className="col-2 justify-self-end self-center">
+          <Button className="px-8">Become a Member <span>&rarr;</span></Button>
+        </div>
       </div>
     </section>
   );

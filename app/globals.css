@@ -104,4 +104,23 @@ p {
   line-height: 1.2;
 }
 
+.container {
+  width: 100%;
+  max-width: 75rem;       /* max-w-300 */
+  margin-inline: auto;    /* mx-auto */
+  padding-inline: 2rem;   /* px-8 */
+}
+
+@media (min-width: 48rem) {   /* md */
+  .container { padding-inline: 4rem; }   /* px-16 */
+}
+
+@media (min-width: 64rem) {   /* lg */
+  .container { padding-inline: 6rem; }   /* px-24 */
+}
+
+@media (min-width: 80rem) {   /* xl */
+  .container { padding-inline: 8rem; }   /* px-32 */
+}
+
 
