@@ -4,6 +4,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
 
 import GsapInitializer from "@/components/GsapInitializer";
+import NavBar from "@/components/NavBar";
 
 // 1. Montserrat (Primary Variable Font - Split into Roman and Italic files)
 const montserrat = localFont({
@@ -79,6 +80,7 @@ export default function RootLayout({
       className={`${montserrat.variable} ${crimsonText.variable} ${brusher.variable} antialiased`}
     >
       <body>
+        <NavBar />
         <GsapInitializer />
         {children}
         <Analytics/>
