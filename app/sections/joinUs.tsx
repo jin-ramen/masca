@@ -35,7 +35,7 @@ export default function JoinUsSection() {
     <section ref={sectionRef} className="grid grid-cols-[2fr_1fr] gap-16 py-32 px-8 md:px-16 lg:px-24 xl:px-32 bg-yellow-500">
       <div className="flex flex-col gap-4 col-1">
         <span className="eyebrow text-red-600">Membership is free</span>
-        <span className="text-blue-600 text-h2 font-bold">
+        <span className="title text-blue-600">
           Jom <JoinUs /> ⸺ the community is waiting. 
         </span>
       </div>

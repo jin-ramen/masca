@@ -133,7 +133,7 @@ function Statistic() {
 
 function UpcomingEvent() {
   return (
-    <div className="flex flex-col gap-4 items-start border border-blue-100/20 rounded-xl bg-blue-500 mx-8 p-8">
+    <div className="flex flex-col gap-4 items-start border border-blue-100/20 rounded-lg bg-blue-500 mx-8 p-8">
       <span className="eyebrow text-yellow-500">Next Major Event</span>
       <span className="text-white text-xl font-bold">
         MASCA National Convention 2026
