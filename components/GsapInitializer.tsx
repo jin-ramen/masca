@@ -3,6 +3,10 @@
 import { useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger, CustomEase);
 
 export default function GsapInitializer() {
   useLayoutEffect(() => {

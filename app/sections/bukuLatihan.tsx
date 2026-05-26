@@ -3,14 +3,8 @@
 import { useRef, type CSSProperties } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 
 import { Marking } from "@/components/TextSVG"; 
-
-gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
-
 
 export default function BukuLatihanSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -46,7 +40,7 @@ export default function BukuLatihanSection() {
     >
 
       {/* Header */}
-      <div
+      <header
         className="relative w-full h-24 border-b-2 border-[#A8C8E8]"
         style={{
           backgroundImage:
@@ -65,7 +59,7 @@ export default function BukuLatihanSection() {
             {today}
           </span>
         </div>
-      </div>
+      </header>
 
       {/* Lined area */}
       <div

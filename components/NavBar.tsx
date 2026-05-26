@@ -1,10 +1,69 @@
+'use client'
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+
+import Image from "next/image";
+import Button from "./Button";
+
+const navLinks = [
+  { name: "Home", href: "/"},
+  { name: "Events", href: "/events"},
+  { name: "Welfare", href: "/care"},
+  { name: "About", href: "/about"},
+]
+
 export default function NavBar() {
+  const pathname = usePathname()
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href)
+
   return (
-    <header className="sticky top-0 left-0 w-full z-50 grid grid-cols-3 py-4 px-16 bg-white">
-      {/* Content goes here */}
-      <div className="col-1 justify-self-start">Logo</div>
-      <div className="col-2 justify-self-center">Menu</div>
-      <div className="col-3 justify-self-end">Contact</div>
+    <header className="fixed top-0 left-0 w-full z-50 grid grid-cols-[auto_auto_auto] py-4 px-4 md:px-16 bg-white">
+      {/* Logo mobile + desktop */}
+      <Link href="/" className="col-1 justify-self-start">
+        <div className="flex items-center gap-4">
+          <Image src="/logo.svg" alt="Masca logo" width={40} height={40} priority />
+          <div className="flex flex-col leading-none">
+            <span className="text-xl font-bold text-blue-600">MASCA</span>
+            <span className="text-xs text-gray-700/80 uppercase">malaysian students&apos; council</span>
+          </div>
+        </div>
+      </Link>
+
+      {/* mobile view */}
+      <div className="col-3 justify-self-end lg:hidden">
+        Hamburger
+      </div>
+
+      {/* desktop view */}
+      <nav className="col-2 justify-self-center hidden lg:flex gap-6">
+        {navLinks.map((link) => {
+          const active = isActive(link.href)
+          return (
+            <Button
+              key={link.name} href={link.href} variant="ghost"
+              className={active ? "text-red-600 border-b-3 border-b-red-600" : "text-blue-600 border-0"}
+            >
+              {link.name}
+            </Button>
+          )
+        })}   
+      </nav>
+
+      <div className="col-3 justify-self-end hidden lg:inline-flex gap-6">
+        <Button
+          href="/sign-in" variant="ghost"
+          className={isActive("/sign-in") ? "text-red-600 border-b-3 border-b-red-600" : "text-blue-600 border-0"}
+        >
+          Sign In
+        </Button>
+        <Button href="/sign-up" variant="accent">
+          Become a Member
+        </Button>
+      </div>
+
     </header>
   )
 }

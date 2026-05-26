@@ -4,12 +4,10 @@ import { useRef } from "react";
 
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 
 import { InAustralia }  from "@/components/TextSVG";
 import Button from "@/components/Button";
 
-gsap.registerPlugin(DrawSVGPlugin);
 
 export default function HeroSection() {
   return (
@@ -47,7 +45,7 @@ function MainContent() {
   })
 
   return (
-    <div className="flex flex-col gap-6 justify-center">
+    <header className="flex flex-col gap-6 justify-center">
       <span className="eyebrow text-yellow-500">
         founded 2001 &middot; 6 states &middot; 1 territory
       </span>
@@ -60,14 +58,14 @@ function MainContent() {
         home.
       </p>
       <div className="flex gap-4">
-        <Button variant="accent">
+        <Button href="/sign-up" variant="accent">
           Become a Member <span>&rarr;</span>
         </Button>
-        <Button variant="outline" className="text-white border-gray-300">
+        <Button href="/events" variant="outline" className="text-white border-gray-300">
           See Whats On
         </Button>
       </div>
-    </div>
+    </header>
   );
 }
 
