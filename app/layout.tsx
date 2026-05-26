@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 
 import GsapInitializer from "@/components/GsapInitializer";
 import NavBar from "@/components/NavBar";
+import WalkingCrowd from "@/components/WalkingCrowd";
 
 // 1. Montserrat (Primary Variable Font - Split into Roman and Italic files)
 const montserrat = localFont({
@@ -84,6 +85,7 @@ export default function RootLayout({
         <NavBar />
         {children}
         <Analytics/>
+        <WalkingCrowd />
       </body>
     </html>
   );
