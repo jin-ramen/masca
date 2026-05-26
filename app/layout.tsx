@@ -9,6 +9,7 @@ import { join } from "node:path";
 import GsapInitializer from "@/components/GsapInitializer";
 import NavBar from "@/components/NavBar";
 import WalkingCrowd, { type Peep } from "@/components/WalkingCrowd";
+import Footer from "@/components/Footer";
 
 // Auto-discover the crowd from public/casts/ (runs on the server). Drop a new
 // SVG into that folder and it joins the walking crowd — no code changes needed.
@@ -104,6 +105,7 @@ export default function RootLayout({
         {children}
         <Analytics/>
         <WalkingCrowd peeps={peeps} />
+        <Footer />
       </body>
     </html>
   );
