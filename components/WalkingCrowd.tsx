@@ -16,17 +16,20 @@ export type Peep = {
   scale?: number;
 };
 
-// Uniform layer-box height for every walker. Sizing by height (not width) means
-// peeps stand the same height regardless of each SVG's viewBox aspect ratio —
-// which is what fixes "Pei is bigger than Jin". Width follows naturally.
-const PEEP_HEIGHT = 360; // px (the figure renders in the upper 80%, see below)
+// Walkers are sized by HEIGHT (not width) so every peep stands the same height
+// regardless of its viewBox aspect ratio. That height is RESPONSIVE: it ramps
+// from MIN (narrow screens) up to MAX (wide screens) — see peepHeight() below.
+const PEEP_HEIGHT_MAX = 360; // px — full figure height on wide screens
+const PEEP_HEIGHT_MIN = 170; // px — figure height on narrow / phone screens
+const WIDTH_FULL = 1280; // container width (px) at/above which peeps are MAX
+const WIDTH_FLOOR = 380; // container width (px) at/below which peeps are MIN
 
 const Y_JITTER = 22; // px, +/- vertical wobble per walker
 const RTL_CHANCE = 0.4; // fraction of walkers that walk right -> left
 
-// Approx on-screen width a walker occupies, for overlap spacing math. Since we
-// size by height, exact widths vary per peep; this is a good-enough average for
-// prefill spacing and the off-screen enter/exit points.
+// Representative on-screen width, used only for the initial prefill spacing.
+// Exact per-peep widths are measured at runtime (see `aspect`) and drive the
+// off-screen entry/exit points.
 const APPROX_PEEP_WIDTH = 300;
 
 // ── Depth layers, back -> front ─────────────────────────────────────────
@@ -74,15 +77,57 @@ export default function WalkingCrowd({ peeps }: { peeps: Peep[] }) {
       // ground spacing beneath the feet.
       const proto = document.createElement('div');
       proto.className = 'absolute bottom-0 left-0 pointer-events-none';
+      // No `will-change` here: GSAP promotes each element to its own GPU layer
+      // while it's tweening (force3D), and walkers tween for their whole life —
+      // so a permanent hint on every node would just waste idle GPU memory.
       proto.innerHTML =
-        '<div class="walker-move" style="display:inline-block;will-change:transform">' +
-        '<div class="walker-bob" style="height:80%;will-change:transform">' +
+        '<div class="walker-move" style="display:inline-block">' +
+        '<div class="walker-bob" style="height:80%">' +
         '<img alt="" decoding="async" style="height:100%;width:auto;display:block" />' +
         '</div></div>';
 
       const intervals: ReturnType<typeof setInterval>[] = [];
       const counts = LAYERS.map(() => 0);
       const active = new Set<gsap.core.Tween>(); // every live tween, for pause/kill
+
+      // Cache the container width so spawns don't force a reflow each time;
+      // keep it fresh on resize.
+      let containerW = container.clientWidth;
+      const ro = new ResizeObserver(() => {
+        containerW = container.clientWidth;
+      });
+      ro.observe(container);
+
+      // Responsive figure height: ramps MIN -> MAX with the container width, so
+      // casts shrink on phones and reach full size on wide screens. Read fresh
+      // per spawn, so it follows resizes (in-flight walkers keep their size).
+      const peepHeight = () =>
+        gsap.utils.clamp(
+          PEEP_HEIGHT_MIN,
+          PEEP_HEIGHT_MAX,
+          gsap.utils.mapRange(
+            WIDTH_FLOOR,
+            WIDTH_FULL,
+            PEEP_HEIGHT_MIN,
+            PEEP_HEIGHT_MAX,
+            containerW
+          )
+        );
+
+      // Measure each peep's natural aspect ratio once (cached) so entry/exit
+      // points match its real width instead of a guess. Also warms the image
+      // cache so the walker <img>s paint instantly on first spawn.
+      const aspect = new Map<string, number>();
+      const FALLBACK_ASPECT = APPROX_PEEP_WIDTH / PEEP_HEIGHT_MAX;
+      for (const p of peeps) {
+        const probe = new Image();
+        probe.onload = () => {
+          if (probe.naturalWidth > 0 && probe.naturalHeight > 0) {
+            aspect.set(p.src, probe.naturalWidth / probe.naturalHeight);
+          }
+        };
+        probe.src = p.src;
+      }
 
       // running = banner is on-screen AND the tab is in the foreground. While
       // false we pause all tweens and stop spawning, so an off-screen banner
@@ -94,7 +139,11 @@ export default function WalkingCrowd({ peeps }: { peeps: Peep[] }) {
         active.forEach((t) => (on ? t.play() : t.pause()));
       };
 
-      const spawnWalker = (layerIdx: number, prefillProgress?: number) => {
+      const spawnWalker = (
+        layerIdx: number,
+        prefillProgress?: number,
+        parent: Node = container
+      ) => {
         const layer = LAYERS[layerIdx];
         if (counts[layerIdx] >= layer.target) return;
         counts[layerIdx]++;
@@ -103,8 +152,10 @@ export default function WalkingCrowd({ peeps }: { peeps: Peep[] }) {
         const direction: 'ltr' | 'rtl' =
           Math.random() > RTL_CHANCE ? 'ltr' : 'rtl';
         const duration = gsap.utils.random(layer.dur[0], layer.dur[1]);
-        const yOffset = layer.y + gsap.utils.random(-Y_JITTER, Y_JITTER);
-        const h = PEEP_HEIGHT * (asset.scale ?? 1);
+        const ph = peepHeight();
+        const ratio = ph / PEEP_HEIGHT_MAX; // scale the vertical layout to match
+        const yOffset = (layer.y + gsap.utils.random(-Y_JITTER, Y_JITTER)) * ratio;
+        const h = ph * (asset.scale ?? 1);
 
         const walkerNode = proto.cloneNode(true) as HTMLDivElement;
         walkerNode.style.zIndex = String(layer.z);
@@ -117,31 +168,24 @@ export default function WalkingCrowd({ peeps }: { peeps: Peep[] }) {
         const img = walkerNode.querySelector('img') as HTMLImageElement;
         moveTarget.style.height = `${h}px`;
         img.src = asset.src;
-        container.appendChild(walkerNode);
+        parent.appendChild(walkerNode);
 
-        const containerW = container.clientWidth;
-        const offLeft = -APPROX_PEEP_WIDTH;
-        const offRight = containerW + APPROX_PEEP_WIDTH;
-        const fromX = direction === 'ltr' ? offLeft : offRight;
-        const toX = direction === 'ltr' ? offRight : offLeft;
+        // Enter/exit just off-screen by this peep's real width.
+        const peepW = h * (aspect.get(asset.src) ?? FALLBACK_ASPECT);
+        const fromX = direction === 'ltr' ? -peepW : containerW + peepW;
+        const toX = direction === 'ltr' ? containerW + peepW : -peepW;
 
-        // Face the way we walk, and start off-screen on the entry side.
-        gsap.set(moveTarget, { scaleX: direction === 'rtl' ? -1 : 1, x: fromX });
+        // Where the walker starts: mid-path for reduced-motion + prefilled peeps
+        // (so the banner loads populated), otherwise just off-screen.
+        const startProgress = reduceMotion ? Math.random() : (prefillProgress ?? 0);
+        const startX = gsap.utils.interpolate(fromX, toX, startProgress);
 
-        // Reduced motion: drop a static walker somewhere along its path; no tweens.
-        if (reduceMotion) {
-          gsap.set(moveTarget, {
-            x: gsap.utils.interpolate(fromX, toX, Math.random()),
-          });
-          return;
-        }
+        // Single write: face the way we walk + set the start position.
+        gsap.set(moveTarget, { scaleX: direction === 'rtl' ? -1 : 1, x: startX });
 
-        // Prefilled walkers start partway across so the banner loads populated.
-        if (prefillProgress != null) {
-          gsap.set(moveTarget, {
-            x: gsap.utils.interpolate(fromX, toX, prefillProgress),
-          });
-        }
+        // Reduced motion: leave the walker static, no tweens.
+        if (reduceMotion) return;
+
         const remaining = prefillProgress != null ? 1 - prefillProgress : 1;
 
         const bob = gsap.to(bobTarget, {
@@ -171,16 +215,18 @@ export default function WalkingCrowd({ peeps }: { peeps: Peep[] }) {
         active.add(move);
       };
 
-      // Prefill each layer so the banner starts already populated.
+      // Prefill each layer so the banner starts already populated. Collect the
+      // nodes in a fragment and attach them in one batch (fewer reflows).
+      const frag = document.createDocumentFragment();
+      const prefillW = APPROX_PEEP_WIDTH * (peepHeight() / PEEP_HEIGHT_MAX);
       LAYERS.forEach((layer, layerIdx) => {
-        const containerW = container.clientWidth;
-        const step =
-          (APPROX_PEEP_WIDTH * layer.gap) / (containerW + APPROX_PEEP_WIDTH * 2);
+        const step = (prefillW * layer.gap) / (containerW + prefillW * 2);
         for (let i = 0; i < layer.target; i++) {
           const progress = Math.min(0.98, i * step + Math.random() * step * 0.5);
-          spawnWalker(layerIdx, progress);
+          spawnWalker(layerIdx, progress, frag);
         }
       });
+      container.appendChild(frag);
 
       if (reduceMotion) return;
 
@@ -207,6 +253,7 @@ export default function WalkingCrowd({ peeps }: { peeps: Peep[] }) {
       return () => {
         intervals.forEach(clearInterval);
         io.disconnect();
+        ro.disconnect();
         document.removeEventListener('visibilitychange', sync);
         active.forEach((t) => t.kill()); // kill any in-flight tweens on unmount
         active.clear();
@@ -219,7 +266,7 @@ export default function WalkingCrowd({ peeps }: { peeps: Peep[] }) {
     <div
       ref={containerRef}
       aria-hidden="true"
-      className="relative w-full h-[500px] bg-[#FFFEF8] overflow-hidden"
+      className="relative w-full min-h-75 sm:min-h-100 lg:min-h-125 bg-white overflow-hidden"
     />
   );
 }
