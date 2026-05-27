@@ -75,8 +75,8 @@ export default function Footer() {
             </div>
           ))}
 
-          <span className="inline-flex lg:hidden text-h2 font-accent text-yellow-500 self-center justify-self-start">
-            Termima <br/> Kashi
+          <span className="inline-flex md:hidden text-h2 font-accent text-yellow-500 self-center justify-self-start">
+            Terima <br/> Kasih
           </span>
         </div>
 
@@ -85,7 +85,7 @@ export default function Footer() {
             © {new Date().getFullYear()} &thinsp; MASCA &thinsp; &middot; &thinsp; Malaysian Students&apos; Council of Australia
           </span>
           <span className="md:inline-flex hidden text-h3 font-accent text-yellow-500">
-            Termima Kashi
+            Terima Kasih
           </span>
         </div>
       </div>
