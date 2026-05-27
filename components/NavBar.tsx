@@ -5,7 +5,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type Ref } from "react";
+
 import Button from "./Button";
 
 const navLinks = [
@@ -16,12 +17,252 @@ const navLinks = [
   { name: "Contact", href: "/contact"}
 ]
 
+type IsActive = (href: string) => boolean
+
+// Brand logo + wordmark, links home.
+function Logo() {
+  return (
+    <Link href="/" className="col-1 justify-self-start relative z-20">
+      <div className="flex items-center gap-4">
+        <Image src="/logo/logo.svg" alt="Masca logo" width={40} height={40} priority />
+        <div className="flex flex-col leading-none">
+          <span className="text-xl font-bold tracking-wider text-blue-600">MASCA</span>
+          <span className="text-xs font-semibold text-gray-700/80 uppercase">malaysian students&apos; council</span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+// Satay toggle icon geometry (40x40 viewBox). Three skewers stacked when
+// closed; they converge into one cooking skewer with flames when the menu
+// opens. Module scope keeps these static — defined once, not per render.
+const SKEWERS = [
+  { id: "skewer-top", cy: 9 },
+  { id: "skewer-mid", cy: 18 },
+  { id: "skewer-bot", cy: 27 },
+] as const
+
+const OUTER_FLAMES = [
+  { cx: 8.5, h: 11, w: 6, fill: "#ea580c" },
+  { cx: 14, h: 14, w: 7, fill: "#f97316" },
+  { cx: 20, h: 12, w: 6.5, fill: "#f97316" },
+  { cx: 25.5, h: 10, w: 5.5, fill: "#ea580c" },
+] as const
+
+const INNER_FLAMES = [
+  { cx: 14, h: 9, w: 4 },
+  { cx: 20, h: 7.5, w: 3.6 },
+] as const
+
+// A teardrop flame: rounded base at baseY, point h above it.
+function flamePath(cx: number, baseY: number, h: number, w: number) {
+  const half = w / 2
+  return `M ${cx - half} ${baseY} C ${cx - half - 1} ${baseY - h * 0.45}, ${cx - 1.3} ${baseY - h * 0.8}, ${cx} ${baseY - h} C ${cx + 1.3} ${baseY - h * 0.8}, ${cx + half + 1} ${baseY - h * 0.45}, ${cx + half} ${baseY} Q ${cx} ${baseY + 1.4} ${cx - half} ${baseY} Z`
+}
+
+// Presentational satay SVG. The ref (React 19 ref-as-prop) lets SatayToggle
+// drive GSAP animations against the inner #skewers / .flame / .smoke groups.
+function SatayIcon({ ref }: { ref?: Ref<SVGSVGElement> }) {
+  return (
+    <svg ref={ref} viewBox="0 0 40 40" className="w-9 h-9 overflow-visible" aria-hidden="true">
+      {/* flames (painted behind the skewer) */}
+      <g id="flames">
+        {OUTER_FLAMES.map((f, i) => (
+          <path key={`of-${i}`} className="flame" d={flamePath(f.cx, 33, f.h, f.w)} fill={f.fill} style={{ opacity: 0 }} />
+        ))}
+        {INNER_FLAMES.map((f, i) => (
+          <path key={`if-${i}`} className="flame" d={flamePath(f.cx, 32, f.h, f.w)} fill="#facc15" style={{ opacity: 0 }} />
+        ))}
+      </g>
+
+      {/* skewers (cold = brand blue; children inherit the group fill) */}
+      <g id="skewers" fill="#010066">
+        {SKEWERS.map(({ id, cy }) => (
+          <g id={id} key={id}>
+            <rect x="5" y={cy - 0.8} width="31" height="1.6" rx="0.8" />
+            <path d={`M 36 ${cy - 1.2} l 3.2 1.2 -3.2 1.2 z`} />
+            <rect x="6" y={cy - 2.6} width="6" height="5.2" rx="1.8" />
+            <rect x="13.5" y={cy - 2.6} width="6" height="5.2" rx="1.8" />
+            <rect x="21" y={cy - 2.6} width="6" height="5.2" rx="1.8" />
+          </g>
+        ))}
+      </g>
+
+      {/* smoke puff (close hint) */}
+      <g id="smoke">
+        <ellipse className="smoke" cx="12" cy="14" rx="3" ry="2.2" fill="#4A4A4A" style={{ opacity: 0 }} />
+        <ellipse className="smoke" cx="18" cy="12" rx="2.6" ry="1.9" fill="#4A4A4A" style={{ opacity: 0 }} />
+        <ellipse className="smoke" cx="24" cy="13" rx="2.2" ry="1.6" fill="#4A4A4A" style={{ opacity: 0 }} />
+      </g>
+    </svg>
+  )
+}
+
+// Mobile menu button: the animated satay-on-the-grill toggle. Owns the icon's
+// refs and the GSAP timelines that morph it between cold and cooking states.
+function SatayToggle({ open, onToggle }: { open: boolean; onToggle: () => void }) {
+  const svgRef = useRef<SVGSVGElement>(null)
+  const flickerRef = useRef<gsap.core.Timeline | null>(null)
+
+  // Build the looping flame-flicker timeline once; it stays paused until the
+  // menu opens, then plays continuously for that "live grill" feel.
+  useGSAP(() => {
+    const flames = gsap.utils.toArray<SVGElement>(".flame", svgRef.current)
+    gsap.set(flames, { transformOrigin: "center bottom", scaleY: 0, opacity: 0 })
+    gsap.set(".smoke", { transformOrigin: "center center", opacity: 0, y: 0, scale: 0.6 })
+
+    flickerRef.current = gsap
+      .timeline({ repeat: -1, yoyo: true, paused: true, repeatRefresh: true, defaults: { ease: "sine.inOut" } })
+      .to(flames, {
+        scaleY: () => gsap.utils.random(0.78, 1),
+        scaleX: () => gsap.utils.random(0.9, 1.08),
+        x: () => gsap.utils.random(-0.5, 0.5),
+        opacity: () => gsap.utils.random(0.85, 1),
+        duration: () => gsap.utils.random(0.16, 0.3),
+        stagger: { each: 0.05, from: "random" },
+      })
+  }, { scope: svgRef })
+
+  // Morph the icon when the menu toggles: the three cold skewers converge into
+  // one skewer cooking over flames on open; on close the flames go out with a
+  // smoke puff + dim-to-grey before the skewers split back into three.
+  useGSAP(() => {
+    if (!svgRef.current) return
+    const flames = gsap.utils.toArray<SVGElement>(".flame", svgRef.current)
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const tl = gsap.timeline({ defaults: { ease: "entranceEase" } })
+
+    if (open) {
+      tl.to("#skewer-top", { y: 9, opacity: 0, duration: 0.4 }, 0)
+        .to("#skewer-bot", { y: -9, opacity: 0, duration: 0.4 }, 0)
+        .to("#skewer-mid", { y: 0, scale: 1.08, rotation: 30, transformOrigin: "center center", duration: 0.4 }, 0)
+        .to("#skewers", { fill: "#CC0001", duration: 0.4 }, 0)
+        .to(flames, { opacity: 1, scaleY: 1, scaleX: 1, duration: 0.35, stagger: { each: 0.05, from: "center" } }, 0.18)
+      if (!reduced) tl.call(() => flickerRef.current?.play(0), undefined, 0.55)
+    } else {
+      // Only run the close sequence if we were actually cooking — keeps the
+      // initial mount (and StrictMode double-invoke) from flashing smoke.
+      const lit = flames.length > 0 && (gsap.getProperty(flames[0], "scaleY") as number) > 0.05
+      if (!lit) return
+      flickerRef.current?.pause()
+      tl.to(flames, { scaleY: 0, opacity: 0, duration: 0.28, stagger: { each: 0.03, from: "edges" } }, 0)
+        .fromTo(".smoke",
+          { opacity: 0, y: 0, scale: 0.5 },
+          { opacity: 0.9, y: -15, scale: 1.8, duration: 0.75, stagger: 0.12, ease: "power1.out" }, 0.05)
+        .to(".smoke", { opacity: 0, duration: 0.45 }, 0.65)
+        .to("#skewers", { fill: "#34389A", duration: 0.2 }, 0)
+        .to("#skewers", { fill: "#010066", duration: 0.4 }, 0.28)
+        .to("#skewer-top", { y: 0, opacity: 1, duration: 0.4 }, 0.25)
+        .to("#skewer-bot", { y: 0, opacity: 1, duration: 0.4 }, 0.25)
+        .to("#skewer-mid", { y: 0, scale: 1, rotation: 0, duration: 0.4 }, 0.25)
+    }
+  }, { dependencies: [open], scope: svgRef })
+
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-controls="mobile-menu"
+      aria-label={open ? "Close menu" : "Open menu"}
+      className="col-3 justify-self-end lg:hidden p-2 -mr-2 relative z-20"
+    >
+      <SatayIcon ref={svgRef} />
+    </button>
+  )
+}
+
+// Centered primary navigation (desktop only).
+function DesktopNav({ isActive }: { isActive: IsActive }) {
+  return (
+    <nav className="col-2 justify-self-center hidden lg:flex gap-4">
+      {navLinks.map((link) => {
+        const active = isActive(link.href)
+        return (
+          <Button
+            key={link.name} href={link.href} variant="ghost"
+            className={active ? "text-red-600 border-b-3 border-b-red-600" : "text-blue-600 border-0"}
+          >
+            {link.name}
+          </Button>
+        )
+      })}
+    </nav>
+  )
+}
+
+// Auth / membership actions (desktop only).
+function DesktopActions({ isActive }: { isActive: IsActive }) {
+  return (
+    <div className="col-3 justify-self-end hidden lg:inline-flex gap-6">
+      <Button
+        href="/sign-in" variant="ghost"
+        className={isActive("/sign-in") ? "text-red-600 border-b-3 border-b-red-600" : "text-blue-600 border-0"}
+      >
+        Sign In
+      </Button>
+      <Button href="/sign-up" variant="accent">
+        Become a Member
+      </Button>
+    </div>
+  )
+}
+
+// Full-screen mobile dropdown. Owns the panel ref and its open/close animation.
+function MobileMenu({ open, isActive }: { open: boolean; isActive: IsActive }) {
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  useGSAP(() => {
+    if (!panelRef.current) return
+    gsap.to(panelRef.current, {
+      height: open ? window.innerHeight : 0,
+      opacity: open ? 1 : 0,
+      duration: 0.4,
+      ease: "entranceEase",
+    })
+  }, { dependencies: [open] })
+
+  return (
+    <div
+      id="mobile-menu"
+      ref={panelRef}
+      className="fixed inset-x-0 top-0 z-10 lg:hidden overflow-hidden bg-white/95 backdrop-blur-md"
+      style={{ height: 0, opacity: 0 }}
+    >
+      <nav className="flex flex-col items-center justify-center gap-6 h-dvh px-6 text-center">
+        {navLinks.map((link) => {
+          const active = isActive(link.href)
+          return (
+            <Button
+              key={link.name} href={link.href} variant="ghost"
+              className={`text-3xl! ${active ? "text-red-600" : "text-blue-600"}`}
+            >
+              {link.name}
+            </Button>
+          )
+        })}
+        <Button
+          href="/sign-in" variant="ghost"
+          className={`text-3xl! ${isActive("/sign-in") ? "text-red-600" : "text-blue-600"}`}
+        >
+          Sign In
+        </Button>
+        <Button href="/sign-up" variant="accent" className="text-xl! px-8 py-4 mt-2">
+          Become a Member
+        </Button>
+      </nav>
+    </div>
+  )
+}
+
+// Stateful container: owns the open state + global side effects, and assembles
+// the navbar from the focused pieces above.
 export default function NavBar() {
-  const headerRef = useRef(null)
-  const panelRef = useRef(null)
+  const headerRef = useRef<HTMLElement>(null)
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
-  const isActive = (href: string) =>
+  const isActive: IsActive = (href) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href)
 
   // Close the mobile menu whenever the route changes. Adjusting state during
@@ -48,6 +289,7 @@ export default function NavBar() {
     return () => { document.body.style.overflow = "" }
   }, [open])
 
+  // Frost the header background once the page scrolls past the hero.
   useGSAP(() => {
     gsap.to(headerRef.current, {
       backgroundColor: 'rgba(255,255,255,0.8)',
@@ -62,107 +304,13 @@ export default function NavBar() {
     })
   }, { scope: headerRef })
 
-  // Animate the mobile dropdown open/close.
-  useGSAP(() => {
-    if (!panelRef.current) return
-    gsap.to(panelRef.current, {
-      height: open ? window.innerHeight : 0,
-      opacity: open ? 1 : 0,
-      duration: 0.4,
-      ease: "entranceEase",
-    })
-  }, { dependencies: [open] })
-
-
   return (
     <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 grid grid-cols-[auto_auto_auto] py-4 px-6 md:px-16 bg-white">
-      {/* Logo mobile + desktop */}
-      <Link href="/" className="col-1 justify-self-start relative z-20">
-        <div className="flex items-center gap-4">
-          <Image src="/logo/logo.svg" alt="Masca logo" width={40} height={40} priority />
-          <div className="flex flex-col leading-none">
-            <span className="text-xl font-bold tracking-wider text-blue-600">MASCA</span>
-            <span className="text-xs font-semibold text-gray-700/80 uppercase">malaysian students&apos; council</span>
-          </div>
-        </div>
-      </Link>
-
-      {/* mobile view — satay silhouette toggle (monochrome via CSS mask) */}
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-controls="mobile-menu"
-        aria-label={open ? "Close menu" : "Open menu"}
-        className="col-3 justify-self-end lg:hidden p-2 -mr-2 relative z-20"
-      >
-        <span
-          className={`block w-9 h-7 transition-colors ${open ? "bg-red-600" : "bg-blue-600"}`}
-          style={{
-            WebkitMask: "url(/satay.svg) center / contain no-repeat",
-            mask: "url(/satay.svg) center / contain no-repeat",
-          }}
-        />
-      </button>
-
-      {/* desktop view */}
-      <nav className="col-2 justify-self-center hidden lg:flex gap-8">
-        {navLinks.map((link) => {
-          const active = isActive(link.href)
-          return (
-            <Button
-              key={link.name} href={link.href} variant="ghost"
-              className={active ? "text-red-600 border-b-3 border-b-red-600" : "text-blue-600 border-0"}
-            >
-              {link.name}
-            </Button>
-          )
-        })}   
-      </nav>
-
-      <div className="col-3 justify-self-end hidden lg:inline-flex gap-6">
-        <Button
-          href="/sign-in" variant="ghost"
-          className={isActive("/sign-in") ? "text-red-600 border-b-3 border-b-red-600" : "text-blue-600 border-0"}
-        >
-          Sign In
-        </Button>
-        <Button href="/sign-up" variant="accent">
-          Become a Member
-        </Button>
-      </div>
-
-      {/* mobile full-screen menu */}
-      <div
-        id="mobile-menu"
-        ref={panelRef}
-        className="fixed inset-x-0 top-0 z-10 lg:hidden overflow-hidden bg-white/95 backdrop-blur-md"
-        style={{ height: 0, opacity: 0 }}
-      >
-        <nav className="flex flex-col items-center justify-center gap-6 h-dvh px-6 text-center">
-          {navLinks.map((link) => {
-            const active = isActive(link.href)
-            return (
-              <Button
-                key={link.name} href={link.href} variant="ghost"
-                className={`text-3xl! ${active ? "text-red-600" : "text-blue-600"}`}
-              >
-                {link.name}
-              </Button>
-            )
-          })}
-          <Button
-            href="/sign-in" variant="ghost"
-            className={`text-3xl! ${isActive("/sign-in") ? "text-red-600" : "text-blue-600"}`}
-          >
-            Sign In
-          </Button>
-          <Button href="/sign-up" variant="accent" className="text-xl! px-8 py-4 mt-2">
-            Become a Member
-          </Button>
-        </nav>
-      </div>
-
+      <Logo />
+      <SatayToggle open={open} onToggle={() => setOpen((v) => !v)} />
+      <DesktopNav isActive={isActive} />
+      <DesktopActions isActive={isActive} />
+      <MobileMenu open={open} isActive={isActive} />
     </header>
   )
 }
