@@ -56,7 +56,7 @@ export default function NavBar() {
       </div>
 
       {/* desktop view */}
-      <nav className="col-2 justify-self-center hidden lg:flex gap-6">
+      <nav className="col-2 justify-self-center hidden lg:flex gap-8">
         {navLinks.map((link) => {
           const active = isActive(link.href)
           return (

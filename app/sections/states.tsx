@@ -79,7 +79,7 @@ function StateCard({ state }: { state: State }) {
         borderColor: state.bg,
         y: -8,
         duration: 0.3,
-        ease: "entranceEase",
+        ease: "none",
         boxShadow: "var(--shadow-lg)"
       })
       .to(cardRef.current!.querySelectorAll(".card-text"), {

@@ -41,7 +41,7 @@ export default function EventShowcaseSection() {
 
         <p className="text-gray-700">From Malaysia Night galas to study sessions and durian-tasting socials. <br/> Pick something, bring a friend, jom!</p>
 
-        <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6 justify-items-center items-center">
           {flagshipEvents.map((event) => (
               <EventCard key={ event.id } event={ event } />
           ))}
@@ -71,7 +71,7 @@ function EventCard({ event }: { event: EventData }) {
   useGSAP(() => {
     tweenRef.current = gsap.to(cardRef.current, {
       y: -8,
-      ease: "entranceEase",
+      ease: "none",
       boxShadow: "var(--shadow-lg)",
       paused: true,
     })
