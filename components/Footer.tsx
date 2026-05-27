@@ -84,7 +84,7 @@ export default function Footer() {
           <span className="text-caption text-gray-300">
             © {new Date().getFullYear()} &thinsp; MASCA &thinsp; &middot; &thinsp; Malaysian Students&apos; Council of Australia
           </span>
-          <span className="lg:inline-flex hidden text-h3 font-accent text-yellow-500">
+          <span className="md:inline-flex hidden text-h3 font-accent text-yellow-500">
             Termima Kashi
           </span>
         </div>
