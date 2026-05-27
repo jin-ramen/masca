@@ -334,7 +334,7 @@ export default function NavBar() {
   }, { scope: headerRef })
 
   return (
-    <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 grid grid-cols-[auto_auto_auto] items-center py-4 px-6 md:px-16 bg-white">
+    <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 grid grid-cols-[auto_auto_auto] items-center py-2 px-6 md:px-16 bg-white">
       <Logo />
       <SatayToggle open={open} onToggle={() => setOpen((v) => !v)} />
       <DesktopNav isActive={isActive} />
