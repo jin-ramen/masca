@@ -57,6 +57,7 @@ function MascaCareCard() {
       y: -16,
       ease: "none",
       paused: true,
+      duration: 0.2,
     })
   }, { scope: cardRef })
 

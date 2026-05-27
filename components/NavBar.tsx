@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "./Button";
 
 const navLinks = [
@@ -18,9 +18,29 @@ const navLinks = [
 
 export default function NavBar() {
   const headerRef = useRef(null)
+  const panelRef = useRef(null)
+  const [open, setOpen] = useState(false)
   const pathname = usePathname()
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href)
+
+  // Close the mobile menu whenever the route changes.
+  useEffect(() => setOpen(false), [pathname])
+
+  // Close the mobile menu on Escape.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false)
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [])
+
+  // Lock background scroll while the full-screen menu is open.
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
+  }, [open])
 
   useGSAP(() => {
     gsap.to(headerRef.current, {
@@ -35,12 +55,23 @@ export default function NavBar() {
       },
     })
   }, { scope: headerRef })
-  
+
+  // Animate the mobile dropdown open/close.
+  useGSAP(() => {
+    if (!panelRef.current) return
+    gsap.to(panelRef.current, {
+      height: open ? window.innerHeight : 0,
+      opacity: open ? 1 : 0,
+      duration: 0.4,
+      ease: "entranceEase",
+    })
+  }, { dependencies: [open] })
+
 
   return (
-    <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 grid grid-cols-[auto_auto_auto] py-4 px-4 md:px-16 bg-white">
+    <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 grid grid-cols-[auto_auto_auto] py-4 px-6 md:px-16 bg-white">
       {/* Logo mobile + desktop */}
-      <Link href="/" className="col-1 justify-self-start">
+      <Link href="/" className="col-1 justify-self-start relative z-20">
         <div className="flex items-center gap-4">
           <Image src="/logo/logo.svg" alt="Masca logo" width={40} height={40} priority />
           <div className="flex flex-col leading-none">
@@ -50,10 +81,23 @@ export default function NavBar() {
         </div>
       </Link>
 
-      {/* mobile view */}
-      <div className="col-3 justify-self-end lg:hidden">
-        Hamburger
-      </div>
+      {/* mobile view — satay silhouette toggle (monochrome via CSS mask) */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls="mobile-menu"
+        aria-label={open ? "Close menu" : "Open menu"}
+        className="col-3 justify-self-end lg:hidden p-2 -mr-2 relative z-20"
+      >
+        <span
+          className={`block w-9 h-7 transition-colors ${open ? "bg-red-600" : "bg-blue-600"}`}
+          style={{
+            WebkitMask: "url(/satay.svg) center / contain no-repeat",
+            mask: "url(/satay.svg) center / contain no-repeat",
+          }}
+        />
+      </button>
 
       {/* desktop view */}
       <nav className="col-2 justify-self-center hidden lg:flex gap-8">
@@ -80,6 +124,37 @@ export default function NavBar() {
         <Button href="/sign-up" variant="accent">
           Become a Member
         </Button>
+      </div>
+
+      {/* mobile full-screen menu */}
+      <div
+        id="mobile-menu"
+        ref={panelRef}
+        className="fixed inset-x-0 top-0 z-10 lg:hidden overflow-hidden bg-white/95 backdrop-blur-md"
+        style={{ height: 0, opacity: 0 }}
+      >
+        <nav className="flex flex-col items-center justify-center gap-6 h-dvh px-6 text-center">
+          {navLinks.map((link) => {
+            const active = isActive(link.href)
+            return (
+              <Button
+                key={link.name} href={link.href} variant="ghost"
+                className={`text-3xl! ${active ? "text-red-600" : "text-blue-600"}`}
+              >
+                {link.name}
+              </Button>
+            )
+          })}
+          <Button
+            href="/sign-in" variant="ghost"
+            className={`text-3xl! ${isActive("/sign-in") ? "text-red-600" : "text-blue-600"}`}
+          >
+            Sign In
+          </Button>
+          <Button href="/sign-up" variant="accent" className="text-xl! px-8 py-4 mt-2">
+            Become a Member
+          </Button>
+        </nav>
       </div>
 
     </header>

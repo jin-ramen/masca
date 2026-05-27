@@ -20,7 +20,7 @@ export default function EventShowcaseSection() {
     gsap.from(".event-card", {
       opacity: 0,
       y: 24,
-      duration: 0.5,
+      duration: 0.2,
       stagger: 0.08,
       ease: "entranceEase",
       scrollTrigger: {
