@@ -22,7 +22,7 @@ const footerSections: { heading: string; links: FooterLink[] }[] = [
       { label: "Our Story", href: "/about" },
       { label: "Leadership", href: "/" },
       { label: "Partners", href: "/about" },
-      { label: "Careers", href: "/about" },
+      { label: "Contact us", href: "/contact" },
     ],
   },
   {
@@ -32,7 +32,6 @@ const footerSections: { heading: string; links: FooterLink[] }[] = [
       { label: "Facebook", href: "https://www.facebook.com/nationalmasca", external: true },
       { label: "X", href: "https://x.com/masca_national/", external: true },
       { label: "Linkedin", href: "https://au.linkedin.com/company/masca", external: true },
-      { label: "Contact us", href: "/contact" },
     ],
   },
 ];
