@@ -24,8 +24,14 @@ export default function NavBar() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href)
 
-  // Close the mobile menu whenever the route changes.
-  useEffect(() => setOpen(false), [pathname])
+  // Close the mobile menu whenever the route changes. Adjusting state during
+  // render with a previous-value guard (instead of in an effect) avoids the
+  // cascading-render warning. https://react.dev/learn/you-might-not-need-an-effect
+  const [prevPathname, setPrevPathname] = useState(pathname)
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname)
+    setOpen(false)
+  }
 
   // Close the mobile menu on Escape.
   useEffect(() => {
