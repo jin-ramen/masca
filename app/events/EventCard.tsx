@@ -4,8 +4,8 @@ import { useRef } from "react"
 import { gsap } from "gsap"
 import { useGSAP } from "@gsap/react"
 
-import Button from "@/components/Button"
 import type { Chapter, Event } from "@/utils/events"
+import CheckoutButton from "./CheckoutButton"
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] as const
 
@@ -99,11 +99,7 @@ export default function EventCard({ event, chapter }: { event: Event; chapter?: 
 
         <div className="flex items-center justify-between">
           <span className="text-md font-bold text-red-700">{price}</span>
-          <a href={event.url} target="_blank" rel="noopener noreferrer">
-            <Button variant="ghost">
-              Register <span aria-hidden>&rarr;</span>
-            </Button>
-          </a>
+          <CheckoutButton eventId={event.id} />
         </div>
       </div>
     </article>
