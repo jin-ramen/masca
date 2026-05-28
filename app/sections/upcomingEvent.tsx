@@ -34,7 +34,7 @@ export default async function UpcomingEvent() {
   const soldOut = event.ticket_availability?.is_sold_out === true
 
   return (
-    <div className="flex flex-col gap-5 items-start border border-blue-100/20 rounded-lg bg-blue-500 mx-8 p-10 min-w-[320px] sm:min-w-[480px]">
+    <div className="flex flex-col gap-5 items-start border border-blue-100/20 rounded-lg bg-blue-500 mx-8 p-10 min-w-[320px] sm:min-w-120">
       <span className="eyebrow text-yellow-500 text-xs uppercase tracking-wider">Next Major Event</span>
       <span className="text-white text-3xl font-bold leading-tight -mt-1">{event.name.text}</span>
       <div className="flex flex-col gap-1 text-sm">

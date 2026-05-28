@@ -78,10 +78,10 @@ export default function EventCard({ event, chapter }: { event: Event; chapter?: 
           />
         )}
         <div className="flex items-center justify-center">
-          <span className="absolute top-3 left-3 text-xs font-bold tracking-[0.2em] text-yellow-400">
+          <span className="absolute top-4 left-4 text-xs font-bold tracking-[0.2em] text-yellow-400">
             {(chapter?.name ?? "MASCA").toUpperCase()} CHAPTER
           </span>
-          <span className="absolute top-2 right-3 rounded-full bg-yellow-400 px-4 py-2 text-xs font-bold text-blue-950">
+          <span className="absolute top-2 right-4 rounded-full bg-yellow-400 px-4 py-2 text-xs font-bold text-blue-950">
             {date}
           </span>
         </div>
