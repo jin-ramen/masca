@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 
 import Button from "@/components/Button"
 
@@ -46,9 +47,10 @@ function loadEbWidgets(): Promise<void> {
 }
 
 /**
- * Opens Eventbrite's hosted checkout in a modal overlay, keyed by the numeric
- * event id. No token needed — embedded checkout is public. The event must have
- * embedded checkout enabled in Eventbrite or the modal won't open.
+ * Renders Eventbrite's *inline* embedded checkout inside our own modal — the
+ * widget no longer honours `modalTriggerElementId`, so we recreate the popup
+ * UX ourselves. The dialog is portaled to <body> so the card's GSAP transforms
+ * don't break `position: fixed`. No token needed; embedded checkout is public.
  */
 export default function CheckoutButton({
   eventId,
@@ -57,21 +59,23 @@ export default function CheckoutButton({
   eventId: string
   label?: string
 }) {
-  const triggerId = `eb-checkout-trigger-${eventId}`
+  const [open, setOpen] = useState(false)
+  const containerId = `eb-checkout-container-${eventId}`
 
+  // Build the checkout iframe once the modal (and its container) is mounted.
   useEffect(() => {
+    if (!open) return
     let cancelled = false
     loadEbWidgets()
       .then(() => {
-        // Runs after the DOM commit, so the trigger button is guaranteed to
-        // exist — the getElementById guard is what keeps Eventbrite in modal
-        // mode instead of falling back to inline.
-        if (cancelled || !window.EBWidgets || !document.getElementById(triggerId)) return
+        const container = document.getElementById(containerId)
+        if (cancelled || !window.EBWidgets || !container) return
+        container.innerHTML = "" // reset so reopening builds a fresh iframe
         window.EBWidgets.createWidget({
           widgetType: "checkout",
           eventId,
-          modalTriggerElementId: triggerId,
-          // Brand the checkout to match the site (modal mode, not inline).
+          iframeContainerId: containerId,
+          iframeContainerHeight: 640,
           themeSettings: {
             brandColor: "#010066", // --color-blue-600
             fontColor: "#000000", // --color-black
@@ -80,16 +84,60 @@ export default function CheckoutButton({
         })
       })
       .catch(() => {
-        /* network/embed failure — the button just won't open a modal */
+        /* network/embed failure — modal just shows an empty container */
       })
     return () => {
       cancelled = true
     }
-  }, [eventId, triggerId])
+  }, [open, eventId, containerId])
+
+  // Lock body scroll + close on Escape while the modal is open.
+  useEffect(() => {
+    if (!open) return
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false)
+    }
+    document.addEventListener("keydown", onKey)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      document.removeEventListener("keydown", onKey)
+    }
+  }, [open])
 
   return (
-    <Button id={triggerId} type="button" variant="ghost">
-      {label} <span aria-hidden>&rarr;</span>
-    </Button>
+    <>
+      <Button type="button" variant="ghost" onClick={() => setOpen(true)}>
+        {label} <span aria-hidden>&rarr;</span>
+      </Button>
+
+      {open &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Event checkout"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            onClick={() => setOpen(false)}
+          >
+            <div
+              className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close checkout"
+                className="absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-blue-600 shadow-md transition-colors hover:bg-blue-50"
+              >
+                <span aria-hidden>&times;</span>
+              </button>
+              <div id={containerId} />
+            </div>
+          </div>,
+          document.body,
+        )}
+    </>
   )
 }
