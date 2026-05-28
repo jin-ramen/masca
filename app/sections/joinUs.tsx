@@ -26,7 +26,7 @@ export default function JoinUsSection() {
         </header>
 
         <div className="justify-self-start lg:justify-self-end">
-          <Button href="/sign-up" className="px-8">Become a Member <span>&rarr;</span></Button>
+          <Button href="/events" className="px-8">See What&apos;s Happening<span>&rarr;</span></Button>
         </div>
         
       </div>

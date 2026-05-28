@@ -14,7 +14,6 @@ const navLinks = [
   { name: "Events", href: "/events"},
   { name: "Welfare", href: "/care"},
   { name: "About", href: "/about"},
-  { name: "Contact", href: "/contact"}
 ]
 
 type IsActive = (href: string) => boolean
@@ -225,14 +224,14 @@ function DesktopNav({ isActive }: { isActive: IsActive }) {
 function DesktopActions({ isActive }: { isActive: IsActive }) {
   return (
     <div className="col-3 justify-self-end hidden lg:inline-flex gap-6">
-      <Button
+      {/* <Button
         href="/sign-in" variant="ghost"
         className={isActive("/sign-in") ? "text-red-600 border-b-3 border-b-red-600" : "text-blue-600 border-0"}
       >
         Sign In
-      </Button>
-      <Button href="/sign-up" variant="accent">
-        Become a Member
+      </Button> */}
+      <Button href="/contact" variant="accent">
+        Get in touch
       </Button>
     </div>
   )

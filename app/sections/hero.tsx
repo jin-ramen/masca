@@ -23,7 +23,7 @@ export default function HeroSection({ upcomingEvent }: { upcomingEvent: ReactNod
       className="
           container grid gap-16 min-h-screen
           grid-cols-1 grid-rows-[1fr_auto_2fr] [grid-template-areas:'.'_'main'_'stats']
-          md:grid-cols-2 md:grid-rows-[1fr_auto_2fr] md:[grid-template-areas:'._.'_'main_event'_'stats_.']
+          lg:grid-cols-2 md:grid-rows-[1fr_auto_2fr] md:[grid-template-areas:'._.'_'main_event'_'stats_.']
       "
       >
         <div className="[grid-area:main]">
@@ -34,7 +34,7 @@ export default function HeroSection({ upcomingEvent }: { upcomingEvent: ReactNod
             <Statistic />
         </div>
 
-        <div className="hidden md:inline-flex md:[grid-area:event] md:justify-self-center md:self-center">
+        <div className="hidden xl:inline-flex md:[grid-area:event] md:justify-self-center md:self-center">
             {upcomingEvent}
         </div>
       </div>
@@ -57,11 +57,11 @@ function MainContent() {
         home.
       </p>
       <div className="flex gap-4">
-        <Button href="/sign-up" variant="accent">
-          Become a Member <span>&rarr;</span>
+        <Button href="/events" variant="accent">
+          See What&apos;s On <span>&rarr;</span>
         </Button>
-        <Button href="/events" variant="outline" className="text-white border-gray-300">
-          See Whats On
+        <Button href="/contact" variant="outline" className="text-white border-gray-300">
+          Contact Us
         </Button>
       </div>
     </header>

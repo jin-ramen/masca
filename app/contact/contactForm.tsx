@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import FormField from "@/components/FormField";
 import Button from "@/components/Button";
+import { sendEmail, type SendState } from "@/utils/email";
 
 const TOPICS = ["General", "Membership", "Events", "Welfare"] as const;
 const STATES = ["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "Others"];
+
+const initialState: SendState = { status: "idle" };
 
 // Shared field/label styles, matching FormField so the inline <select> and
 // <textarea> sit on the same design-system tokens as the text inputs.
@@ -16,6 +19,7 @@ const labelClass = "text-body-sm font-bold text-gray-700";
 export function ContactSection() {
   const [topic, setTopic] = useState<(typeof TOPICS)[number]>("General");
   const [keepOnFile, setKeepOnFile] = useState(true);
+  const [state, formAction, pending] = useActionState(sendEmail, initialState);
 
   return (
     <section className="container py-16 font-primary">
@@ -27,24 +31,27 @@ export function ContactSection() {
         Fill in the form — a real student officer reads it and replies.
       </p> */}
 
-      <form className="flex flex-col gap-8">
+      <form action={formAction} className="flex flex-col gap-8">
         <div className="grid gap-6 sm:grid-cols-2">
-          <FormField label="Full name" placeholder="Your Name" />
-          <FormField label="Email" type="email" placeholder="you@gmail.edu.au" />
-          <FormField label="Affiliation" placeholder="University, company, or society " />
+          <FormField label="Full name" name="name" placeholder="Your Name" required />
+          <FormField label="Email" name="email" type="email" placeholder="you@gmail.edu.au" required />
+          <FormField label="Affiliation" name="affiliation" placeholder="University, company, or society " />
 
           {/* Select — FormField is input-only, so rendered inline with matching styles */}
           <div className="flex flex-col gap-2">
             <label htmlFor="state" className={labelClass}>
               State chapter
             </label>
-            <select id="state" defaultValue="VIC — Victoria" className={fieldClass}>
+            <select id="state" name="state" defaultValue="VIC" className={fieldClass}>
               {STATES.map((s) => (
                 <option key={s}>{s}</option>
               ))}
             </select>
           </div>
         </div>
+
+        {/* Carries the active pill so the action CCs the matching inbox */}
+        <input type="hidden" name="topic" value={topic} />
 
         {/* Topic chips */}
         <fieldset className="flex flex-col">
@@ -76,7 +83,7 @@ export function ContactSection() {
           <label htmlFor="message" className={labelClass}>
             Your message
           </label>
-          <textarea id="message" rows={6} className={`${fieldClass} resize-y`} />
+          <textarea id="message" name="notes" rows={6} required className={`${fieldClass} resize-y`} />
         </div>
 
         {/* Consent */}
@@ -99,9 +106,24 @@ export function ContactSection() {
 
         {/* Submit */}
         <div className="flex flex-wrap items-center gap-5">
-          <Button variant="accent" type="submit">
-            Send message →
+          <Button
+            variant="accent"
+            type="submit"
+            disabled={pending}
+            className={pending ? "opacity-70" : ""}
+          >
+            {pending ? "Sending…" : "Send message →"}
           </Button>
+          {state.status === "success" && (
+            <p role="status" className="text-body-sm font-bold text-blue-600">
+              Thanks — your message is on its way.
+            </p>
+          )}
+          {state.status === "error" && (
+            <p role="alert" className="text-body-sm font-bold text-red-600">
+              {state.message}
+            </p>
+          )}
         </div>
 
       </form>

@@ -28,7 +28,7 @@ export default async function EventShowcaseSection() {
             <EventShowcaseGrid events={events} chapters={CHAPTERS} />
             <div className="flex justify-end">
               <Button href="/events" variant="outline">
-                More events <span aria-hidden>&rarr;</span>
+                More Events <span aria-hidden>&rarr;</span>
               </Button>
             </div>
           </>
