@@ -205,7 +205,7 @@ function SatayToggle({ open, onToggle }: { open: boolean; onToggle: () => void }
 // Centered primary navigation (desktop only).
 function DesktopNav({ isActive }: { isActive: IsActive }) {
   return (
-    <nav className="col-2 justify-self-center hidden lg:flex gap-4">
+    <nav className="col-2 justify-self-center hidden lg:flex gap-8">
       {navLinks.map((link) => {
         const active = isActive(link.href)
         return (
@@ -334,7 +334,7 @@ export default function NavBar() {
   }, { scope: headerRef })
 
   return (
-    <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 grid grid-cols-[auto_auto_auto] items-center py-2 px-6 md:px-16 bg-white">
+    <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 grid grid-cols-[auto_auto_auto] items-center py-2 md:py-4 px-6 md:px-16 bg-white">
       <Logo />
       <SatayToggle open={open} onToggle={() => setOpen((v) => !v)} />
       <DesktopNav isActive={isActive} />
