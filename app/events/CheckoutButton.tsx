@@ -1,6 +1,6 @@
 'use client'
 
-import Script from "next/script"
+import { useEffect } from "react"
 
 import Button from "@/components/Button"
 
@@ -21,11 +21,28 @@ declare global {
   }
 }
 
+// Load eb_widgets.js exactly once, shared across every card on the page.
+let widgetReady: Promise<void> | null = null
+function loadEbWidgets(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve()
+  if (window.EBWidgets) return Promise.resolve()
+  if (!widgetReady) {
+    widgetReady = new Promise<void>((resolve, reject) => {
+      const s = document.createElement("script")
+      s.src = EB_WIDGET_SRC
+      s.async = true
+      s.onload = () => resolve()
+      s.onerror = () => reject(new Error("Failed to load Eventbrite widgets"))
+      document.body.appendChild(s)
+    })
+  }
+  return widgetReady
+}
+
 /**
  * Opens Eventbrite's hosted checkout in a modal overlay, keyed by the numeric
  * event id. No token needed — embedded checkout is public. The event must have
- * embedded checkout enabled in Eventbrite (Manage event → Settings) or the
- * modal won't open.
+ * embedded checkout enabled in Eventbrite or the modal won't open.
  */
 export default function CheckoutButton({
   eventId,
@@ -36,24 +53,31 @@ export default function CheckoutButton({
 }) {
   const triggerId = `eb-checkout-trigger-${eventId}`
 
+  useEffect(() => {
+    let cancelled = false
+    loadEbWidgets()
+      .then(() => {
+        // Runs after the DOM commit, so the trigger button is guaranteed to
+        // exist — the getElementById guard is what keeps Eventbrite in modal
+        // mode instead of falling back to inline.
+        if (cancelled || !window.EBWidgets || !document.getElementById(triggerId)) return
+        window.EBWidgets.createWidget({
+          widgetType: "checkout",
+          eventId,
+          modalTriggerElementId: triggerId,
+        })
+      })
+      .catch(() => {
+        /* network/embed failure — the button just won't open a modal */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [eventId, triggerId])
+
   return (
-    <>
-      <Script
-        src={EB_WIDGET_SRC}
-        strategy="afterInteractive"
-        // onReady (not onLoad) fires on every mount, even when the script was
-        // already cached by another card — so each button registers its widget.
-        onReady={() => {
-          window.EBWidgets?.createWidget({
-            widgetType: "checkout",
-            eventId,
-            modalTriggerElementId: triggerId,
-          })
-        }}
-      />
-      <Button id={triggerId} type="button" variant="ghost">
-        {label} <span aria-hidden>&rarr;</span>
-      </Button>
-    </>
+    <Button id={triggerId} type="button" variant="ghost">
+      {label} <span aria-hidden>&rarr;</span>
+    </Button>
   )
 }
