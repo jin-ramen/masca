@@ -18,16 +18,16 @@ export function ContactSection() {
   const [keepOnFile, setKeepOnFile] = useState(true);
 
   return (
-    <section className="container pt-32 font-primary">
-      <p className="eyebrow text-red-600">Send us a message</p>
+    <section className="container py-16 font-primary">
+      {/* <p className="eyebrow text-red-600">Send us a message</p>
       <h2 className="title mt-3 text-blue-600">
         Tell us what you&apos;re working on.
       </h2>
       <p className="mt-6 max-w-xl text-body text-gray-700">
         Fill in the form — a real student officer reads it and replies.
-      </p>
+      </p> */}
 
-      <form className="mt-10 flex flex-col gap-8">
+      <form className="flex flex-col gap-8">
         <div className="grid gap-6 sm:grid-cols-2">
           <FormField label="Full name" placeholder="Your Name" />
           <FormField label="Email" type="email" placeholder="you@gmail.edu.au" />

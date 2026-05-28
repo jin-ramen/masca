@@ -10,6 +10,18 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main>
+      <section className="flex flex-col justify-center bg-blue-900 pt-48 pb-32 min-h-80">
+        <div className="container flex flex-col gap-24 max-w-2xl space-y-4">
+          <span className="text-xs font-bold tracking-widest text-yellow-400 uppercase">
+            Send us a message
+          </span>
+          <p className="text-base leading-relaxed text-blue-100/80 md:text-lg max-w-xl">
+            Get in touch with MASCA — we&apos;d love to hear from you! <br/>
+            A real student officer reads every single message.
+          </p>
+        </div>
+      </section>
+
       <ContactSection />
     </main>
   );

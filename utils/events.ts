@@ -48,7 +48,7 @@ export async function getUpcomingEvents(): Promise<Event[]> {
 
   const res = await fetch(`${API}/organizations/${orgId}/events/?${params}`, {
     headers: { Authorization: `Bearer ${token}` },
-    next: { revalidate: 3600 }, // cache 1h (Cache Components is off in this project)
+    next: { revalidate: 60 }, // cache 1h (Cache Components is off in this project)
   })
 
   if (!res.ok) throw new Error(`Eventbrite ${res.status}: ${await res.text()}`)
