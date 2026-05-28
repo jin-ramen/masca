@@ -23,7 +23,7 @@ function Logo() {
   return (
     <Link href="/" className="col-1 justify-self-start relative z-20">
       <div className="flex items-center gap-4">
-        <Image src="/logo/logo.svg" alt="Masca logo" width={40} height={40} priority />
+        <Image src="/logo/logo.svg" alt="Masca logo" width={40} height={40} />
         <div className="flex flex-col leading-none">
           <span className="text-xl font-bold tracking-wider text-blue-600">MASCA</span>
           <span className="text-xs font-semibold text-gray-700/80 uppercase">malaysian students&apos; council</span>
@@ -221,15 +221,9 @@ function DesktopNav({ isActive }: { isActive: IsActive }) {
 }
 
 // Auth / membership actions (desktop only).
-function DesktopActions({ isActive }: { isActive: IsActive }) {
+function DesktopActions() {
   return (
     <div className="col-3 justify-self-end hidden lg:inline-flex gap-6">
-      {/* <Button
-        href="/sign-in" variant="ghost"
-        className={isActive("/sign-in") ? "text-red-600 border-b-3 border-b-red-600" : "text-blue-600 border-0"}
-      >
-        Sign In
-      </Button> */}
       <Button href="/contact" variant="accent">
         Get in touch
       </Button>
@@ -290,12 +284,7 @@ export default function NavBar() {
   const headerRef = useRef<HTMLElement>(null)
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
-  const isActive: IsActive = (href) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href)
-
-  // Close the mobile menu whenever the route changes. Adjusting state during
-  // render with a previous-value guard (instead of in an effect) avoids the
-  // cascading-render warning. https://react.dev/learn/you-might-not-need-an-effect
+  const isActive: IsActive = (href) => href === "/" ? pathname === "/" : pathname.startsWith(href)
   const [prevPathname, setPrevPathname] = useState(pathname)
   if (pathname !== prevPathname) {
     setPrevPathname(pathname)
@@ -337,7 +326,7 @@ export default function NavBar() {
       <Logo />
       <SatayToggle open={open} onToggle={() => setOpen((v) => !v)} />
       <DesktopNav isActive={isActive} />
-      <DesktopActions isActive={isActive} />
+      <DesktopActions />
       <MobileMenu open={open} isActive={isActive} />
     </header>
   )

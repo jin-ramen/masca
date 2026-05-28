@@ -1,18 +1,12 @@
 'use client'
 
 import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
 
-import { writeInOnScroll } from "@/utils/animation";
 import Button from "@/components/Button";
 import SponsorsMarquee from "@/components/SponsorsMarquee";
 
 export default function BukuLatihanSection({ sponsors }: { sponsors: string[] }) {
   const sectionRef = useRef<HTMLElement>(null);
-
-  useGSAP(() => {
-   writeInOnScroll(".marking", sectionRef.current)
-  }, { scope: sectionRef })
 
   const today = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -61,11 +55,6 @@ export default function BukuLatihanSection({ sponsors }: { sponsors: string[] })
         </p>
 
       </div>
-
-      {/* Teacher's mark */}
-      {/* <div className="absolute bottom-8 right-10 w-28 -rotate-6">
-        <Marking />
-      </div> */}
     </section>
   )
 }

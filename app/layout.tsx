@@ -22,6 +22,7 @@ const montserrat = localFont({
     },
   ],
   variable: "--font-montserrat",
+   preload: false,
 });
 
 // 2. Crimson Text (Secondary Font - Array of all static weight and style files)
@@ -59,12 +60,14 @@ const crimsonText = localFont({
     },
   ],
   variable: "--font-crimson",
+   preload: false,
 });
 
 // 3. Brusher (Accent Script Font)
 const brusher = localFont({
   src: "./fonts/Brusher.ttf",
   variable: "--font-brusher",
+   preload: false,
 });
 
 export const metadata: Metadata = {
