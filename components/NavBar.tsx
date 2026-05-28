@@ -23,7 +23,7 @@ function Logo() {
   return (
     <Link href="/" className="col-1 justify-self-start relative z-20">
       <div className="flex items-center gap-4">
-        <Image src="/logo/logo.svg" alt="Masca logo" width={40} height={40} />
+        <Image src="/logo/logo.svg" alt="Masca logo" width={40} height={40}  />
         <div className="flex flex-col leading-none">
           <span className="text-xl font-bold tracking-wider text-blue-600">MASCA</span>
           <span className="text-xs font-semibold text-gray-700/80 uppercase">malaysian students&apos; council</span>
@@ -232,7 +232,7 @@ function DesktopActions() {
 }
 
 // Full-screen mobile dropdown. Owns the panel ref and its open/close animation.
-function MobileMenu({ open, isActive }: { open: boolean; isActive: IsActive }) {
+function MobileMenu({ open, isActive, pathname }: { open: boolean; isActive: IsActive, pathname: string }) {
   const panelRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
@@ -252,7 +252,7 @@ function MobileMenu({ open, isActive }: { open: boolean; isActive: IsActive }) {
       className="fixed inset-x-0 top-0 z-10 lg:hidden overflow-hidden bg-white/95 backdrop-blur-md"
       style={{ height: 0, opacity: 0 }}
     >
-      <nav className="flex flex-col items-center justify-center gap-6 h-dvh px-6 text-center">
+      <nav key={ pathname } className="flex flex-col items-center justify-center gap-6 h-dvh px-6 text-center">
         {navLinks.map((link) => {
           const active = isActive(link.href)
           return (
@@ -327,7 +327,7 @@ export default function NavBar() {
       <SatayToggle open={open} onToggle={() => setOpen((v) => !v)} />
       <DesktopNav isActive={isActive} />
       <DesktopActions />
-      <MobileMenu open={open} isActive={isActive} />
+      <MobileMenu open={open} isActive={isActive} pathname={pathname} />
     </header>
   )
 }
