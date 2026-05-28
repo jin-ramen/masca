@@ -1,4 +1,5 @@
 import HeroSection from "./sections/hero";
+import UpcomingEvent from "./sections/upcomingEvent";
 import StatesSection from "./sections/states";
 import EventShowcaseSection from "./sections/eventShowcase";
 import MascaCareSection from "./sections/mascaCare";
@@ -11,7 +12,7 @@ export default function Home() {
 
   return (
    <main>
-      <HeroSection />
+      <HeroSection upcomingEvent={<UpcomingEvent />} />
       <StatesSection />
       <EventShowcaseSection />
       <MascaCareSection />

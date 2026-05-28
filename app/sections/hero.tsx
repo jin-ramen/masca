@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -10,7 +10,7 @@ import Button from "@/components/Button";
 import { writeInOnScroll } from "@/utils/animation"
 
 
-export default function HeroSection() {
+export default function HeroSection({ upcomingEvent }: { upcomingEvent: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null)
 
   useGSAP(() => {
@@ -35,7 +35,7 @@ export default function HeroSection() {
         </div>
 
         <div className="hidden md:inline-flex md:[grid-area:event] md:justify-self-center md:self-center">
-            <UpcomingEvent />
+            {upcomingEvent}
         </div>
       </div>
     </section>
@@ -126,24 +126,6 @@ function Statistic() {
         </span>
         <span className="eyebrow text-gray-300">founded</span>
       </div>
-    </div>
-  );
-}
-
-function UpcomingEvent() {
-  return (
-    <div className="flex flex-col gap-4 items-start border border-blue-100/20 rounded-lg bg-blue-500 mx-8 p-8">
-      <span className="eyebrow text-yellow-500">Next Major Event</span>
-      <span className="text-white text-xl font-bold">
-        MASCA National Convention 2026
-      </span>
-      <div className="flex flex-col gap-1">
-        <span className="text-caption text-gray-300">Melbourne 3-5 July 2026</span>
-        <span className="text-caption text-gray-300">Hosted by MASCA National</span>
-      </div>
-      <Button variant="secondary" className="py-1">
-        Early bird open
-      </Button>
     </div>
   );
 }

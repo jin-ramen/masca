@@ -56,6 +56,7 @@ export default function EventCard({ event, chapter }: { event: Event; chapter?: 
   const time = `${hourLabel(event.start.local)} – ${hourLabel(event.end.local)}`
   const location = event.venue?.name ?? "Online"
   const price = priceLabel(event)
+  const soldOut = event.ticket_availability?.is_sold_out === true
 
   return (
     <article
@@ -84,6 +85,14 @@ export default function EventCard({ event, chapter }: { event: Event; chapter?: 
             {date}
           </span>
         </div>
+
+        {soldOut && (
+          <div className="absolute inset-0 flex items-center justify-center bg-blue-950/60">
+            <span className="rounded-pill bg-red-600 px-5 py-2 text-sm font-bold tracking-[0.2em] text-white">
+              SOLD OUT
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Body */}
@@ -99,11 +108,15 @@ export default function EventCard({ event, chapter }: { event: Event; chapter?: 
 
         <div className="flex items-center justify-between">
           <span className="text-md font-bold text-red-700">{price}</span>
-          <a href={event.url} target="_blank" rel="noopener noreferrer">
-            <Button variant="ghost">
-              Register <span aria-hidden>&rarr;</span>
-            </Button>
-          </a>
+          {soldOut ? (
+            <span className="text-sm font-bold tracking-wider text-gray-400">Sold out</span>
+          ) : (
+            <a href={event.url} target="_blank" rel="noopener noreferrer">
+              <Button variant="ghost">
+                Register <span aria-hidden>&rarr;</span>
+              </Button>
+            </a>
+          )}
         </div>
       </div>
     </article>
