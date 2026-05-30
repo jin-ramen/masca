@@ -10,14 +10,10 @@ gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger, CustomEase);
 
 export default function GsapInitializer() {
   useLayoutEffect(() => {
-    // 1. Register the plugin
-    gsap.registerPlugin(CustomEase);
-    
-    // 2. Define your global system ease
     CustomEase.create("entranceEase", "0.22, 1, 0.36, 1");
   }, []);
 
-  return null; // This component doesn't render anything visually
+  return null;
 }
 
 gsap.registerEffect({
@@ -31,7 +27,7 @@ gsap.registerEffect({
       drawSVG: "100%",
       duration: 0.3,
       stagger: 0.25,
-      ease: "none",
+      ease: "power1.out",
       scrollTrigger: {
         trigger,
         start: "top 80%",
