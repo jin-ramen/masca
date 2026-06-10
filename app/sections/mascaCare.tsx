@@ -12,7 +12,7 @@ export default function MascaCareSection() {
   return (
     <section >
       <div className="container grid grid-cols-1 lg:grid-cols-2 items-center gap-24 lg:gap-16 py-32">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 lg:order-2">
 
           <header className="flex flex-col gap-4">
             <span className="eyebrow text-red-600">student welfare</span>
@@ -24,7 +24,7 @@ export default function MascaCareSection() {
           <Button href="/contact" className="self-start mt-4">Get Support <span>&rarr;</span></Button>
         </div>
 
-        <div className="flex justify-center lg:justify-end">
+        <div className="flex justify-center lg:order-1 lg:justify-start">
           <div className="relative">
             {/* Hand-drawn nudge: cursive note + looping arrow curling into the card */}
             <div className="pointer-events-none absolute -top-14 left-4 z-10 flex items-start gap-1 -rotate-6 md:-top-16 md:left-8">

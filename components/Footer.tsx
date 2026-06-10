@@ -21,7 +21,7 @@ const footerSections: { heading: string; links: FooterLink[] }[] = [
     links: [
       { label: "Our Story", href: "/about" },
       { label: "Leadership", href: "/" },
-      { label: "Partners", href: "/about" },
+      { label: "Committee", href: "/committee" },
       { label: "Contact us", href: "/contact" },
     ],
   },

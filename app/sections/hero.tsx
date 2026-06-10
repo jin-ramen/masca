@@ -34,7 +34,7 @@ export default function HeroSection({ upcomingEvent }: { upcomingEvent: ReactNod
             <Statistic />
         </div>
 
-        <div className="hidden xl:inline-flex md:[grid-area:event] md:justify-self-center md:self-center">
+        <div className="hidden lg:inline-flex md:[grid-area:event] md:justify-self-center md:self-center">
             {upcomingEvent}
         </div>
       </div>

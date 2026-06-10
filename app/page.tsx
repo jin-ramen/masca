@@ -6,6 +6,8 @@ import StatesSection from "./sections/states";
 import EventShowcaseSection from "./sections/eventShowcase";
 import MascaCareSection from "./sections/mascaCare";
 import MascaVoiceSection from "./sections/mascaVoice";
+import YearbookSection from "./sections/yearbook";
+import AboutSection from "./sections/about";
 import SponsorsSection from "./sections/sponsors";
 import JoinUsSection from "./sections/joinUs";
 import { getSponsors } from "@/utils/sponsors";
@@ -21,10 +23,12 @@ export default async function Home() {
   return (
    <main>
       <HeroSection upcomingEvent={<UpcomingEvent />} />
+      <AboutSection />
+      <YearbookSection />
       <StatesSection />
       <EventShowcaseSection />
-      <MascaCareSection />
       <MascaVoiceSection />
+      <MascaCareSection />
       <SponsorsSection sponsors={sponsors} />
       <JoinUsSection />
     </main>

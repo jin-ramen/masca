@@ -4,7 +4,7 @@ import type { Sponsor } from "@/utils/sponsors";
 
 export default function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
   return (
-    <section className="py-24 md:py-28">
+    <section className="bg-gray-100 py-24 md:py-28">
       <div className="container flex flex-col gap-4">
         <header className="flex flex-col gap-4">
           <span className="eyebrow text-red-600">Powered by our partners</span>

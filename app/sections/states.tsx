@@ -78,17 +78,22 @@ function StateCard({ state }: { state: State }) {
   }, { scope: cardRef })
 
   return (
-    <article
-      ref={cardRef}
-      onMouseEnter={() => tl.current?.play()}
-      onMouseLeave={() => tl.current?.reverse()}
-      className="state-card relative overflow-hidden flex flex-col bg-white border border-gray-300 rounded-lg p-4 cursor-pointer shadow-sm"
-    >
-      <NorthStar color={state.bg} className="absolute bottom-1 -right-2 h-12 w-12 opacity-50" />
-      <span className="card-text text-h2 font-extrabold text-blue-600">{state.code}</span>
-      <span className="card-text eyebrow">{state.name}</span>
-      <span className="card-text text-caption text-gray-700">{state.capital}</span>
-    </article>
+    // Entrance reveal (parent's gsap.from) drives the wrapper's transform; the
+    // hover lift drives the inner article's. Keeping them on separate elements
+    // means a hover mid-reveal can't capture a transient y as its resting value.
+    <div className="state-card h-full">
+      <article
+        ref={cardRef}
+        onMouseEnter={() => tl.current?.play()}
+        onMouseLeave={() => tl.current?.reverse()}
+        className="relative h-full overflow-hidden flex flex-col bg-white border border-gray-300 rounded-lg p-4 cursor-pointer shadow-sm"
+      >
+        <NorthStar color={state.bg} className="absolute bottom-1 -right-2 h-12 w-12 opacity-50" />
+        <span className="card-text text-h2 font-extrabold text-blue-600">{state.code}</span>
+        <span className="card-text eyebrow">{state.name}</span>
+        <span className="card-text text-caption text-gray-700">{state.capital}</span>
+      </article>
+    </div>
   )
 }
 
