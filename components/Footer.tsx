@@ -12,8 +12,8 @@ const footerSections: { heading: string; links: FooterLink[] }[] = [
     links: [
       { label: "Events", href: "/events" },
       { label: "Welfare", href: "/care" },
-      { label: "MASCAvoice", href: "https://www.instagram.com/mascavoice/", external: true },
-      { label: "Muafakat", href: "https://www.muafakatgames2024.com/index.html", external: true },
+      { label: "MASCAvoice", href: "https://mascavoice.kit.com/posts", external: true },
+      { label: "Muafakat", href: "https://muafakatgames.com/?preview=home", external: true },
     ],
   },
   {
@@ -30,8 +30,8 @@ const footerSections: { heading: string; links: FooterLink[] }[] = [
     links: [
       { label: "Instagram", href: "https://www.instagram.com/masca_national/", external: true },
       { label: "Facebook", href: "https://www.facebook.com/nationalmasca", external: true },
-      { label: "X", href: "https://x.com/masca_national/", external: true },
-      { label: "Linkedin", href: "https://au.linkedin.com/company/masca", external: true },
+      { label: "X (Twitter)", href: "https://x.com/masca_national/", external: true },
+      { label: "Linkedin", href: "https://www.linkedin.com/company/masca-amplifies/posts/?feedView=all", external: true },
     ],
   },
 ];

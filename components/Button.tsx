@@ -7,15 +7,19 @@ type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost';
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   href?: string;
+  target?: string;
+  rel?: string;
   children: React.ReactNode;
 }
 
-export default function Button({ 
-  variant = 'primary', 
+export default function Button({
+  variant = 'primary',
   href,
-  children, 
-  className = '', 
-  ...props 
+  target,
+  rel,
+  children,
+  className = '',
+  ...props
 }: ButtonProps) {
   
   const baseClasses = "font-primary text-sm rounded-lg transition-all inline-flex items-center justify-center gap-2 cursor-pointer select-none";
@@ -33,7 +37,7 @@ export default function Button({
   // SMART SWITCH: If an href is passed, render a Next.js Link styled as a button
   if (href) {
     return (
-      <Link href={href} className={combinedClasses}>
+      <Link href={href} target={target} rel={rel} className={combinedClasses}>
         {children}
       </Link>
     );

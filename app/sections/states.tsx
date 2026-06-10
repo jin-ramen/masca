@@ -4,24 +4,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 
-type State = {
-  code: string
-  name: string
-  capital: string
-  bg: string
-  fg: string
-}
-
-const states: State[] = [
-  { code: "VIC", name: "Victoria", capital: "Melbourne", bg: "#CF2128", fg: "#FFFFFF" },
-  { code: "NSW", name: "New South Wales", capital: "Sydney", bg: "#263D94", fg: "#FFFFFF" },
-  { code: "QLD", name: "Queensland", capital: "Brisbane", bg: "#821619", fg: "#FFFFFF" },
-  { code: "WA", name: "Western Australia", capital: "Perth", bg: "#F7921F", fg: "#FFFFFF" },
-  { code: "SA", name: "South Australia", capital: "Adelaide", bg: "#FBE700", fg: "#000000" },
-  { code: "ACT", name: "A. Capital Territory", capital: "Canberra", bg: "#298A43", fg: "#FFFFFF" },
-  { code: "TAS", name: "Tasmania", capital: "Hobard", bg: "#9E00A3", fg: "#FFFFFF" },
-  { code: "NZ", name: "New Zealand", capital: "Wellington", bg: "#00E8E8", fg: "#000000" },
-]
+import { STATES, type State } from "@/utils/states"
 
 export default function StatesSection() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -56,7 +39,7 @@ export default function StatesSection() {
           ref={containerRef}
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-[1fr] gap-4"
         >
-          {states.map((state) => (
+          {STATES.map((state) => (
             <StateCard key={state.code} state={state} />
           ))}
         </div>

@@ -10,6 +10,8 @@ import horizontalLoop from "@/utils/horizontalLoop"
 
 gsap.registerPlugin(Observer);
 
+const SPEED = 0.4; // idle drift (~40px/s). Lower = slower.
+
 export default function SponsorsMarquee({ logos }: { logos: string[] }) {
   const container = useRef<HTMLDivElement>(null);
 
@@ -24,25 +26,50 @@ export default function SponsorsMarquee({ logos }: { logos: string[] }) {
     const tl = horizontalLoop(items, {
       repeat: -1,
       paddingRight: 64,
-      speed: 0.4, // idle drift (~40px/s). Lower = slower.
+      speed: SPEED,
     });
 
-    Observer.create({
-      onChangeY(self) {
-        const direction = self.deltaY < 0 ? -1 : 1;
-        gsap.timeline({ defaults: { ease: "power3.out" } })
-          // brief, gentle speed-up in the scroll direction…
-          .to(tl, { timeScale: direction * 3, duration: 0.4, overwrite: true })
-          // …then ease back down to the idle drift speed
-          .to(tl, { timeScale: direction, duration: 1.2 }, "+=0.2")
-      }
-    })
+    // One second of timeline = this many px of travel, so a drag delta (px)
+    // converts to timeline time as delta / pixelsPerSecond.
+    const pixelsPerSecond = SPEED * 100;
+    const wrapTime = gsap.utils.wrap(0, tl.duration());
+
+    let scrubbing = false;
+
+    // Click-and-drag (desktop) / swipe (mobile) scrubs the rail by hand.
+    // Axis lock + touch-action:pan-y leave vertical gestures to the browser,
+    // so the page keeps scrolling and page scroll never drives the marquee.
+    const observer = Observer.create({
+      target: container.current,
+      type: "touch,pointer",
+      lockAxis: true,
+      dragMinimum: 3,
+      onDrag: (self) => {
+        if (self.axis !== "x") return; // vertical swipe → let the page scroll
+        if (!scrubbing) {
+          scrubbing = true;
+          tl.pause(); // take over from the idle drift while dragging
+        }
+        // Drag right (deltaX > 0) rewinds the loop so logos follow the cursor.
+        tl.time(wrapTime(tl.time() - self.deltaX / pixelsPerSecond));
+      },
+      onDragEnd: () => {
+        if (!scrubbing) return;
+        scrubbing = false;
+        tl.play(); // hand back to the idle drift
+      },
+    });
+
+    return () => {
+      observer.kill();
+      tl.kill();
+    };
   }, { scope: container })
 
   return (
     <div
       ref={container}
-      className="scrolling-text overflow-hidden w-full flex"
+      className="scrolling-text flex w-full cursor-grab touch-pan-y select-none overflow-hidden active:cursor-grabbing"
     >
       <div className="rail flex gap-16">
         {loopItems.map((src, i) => (
@@ -52,7 +79,8 @@ export default function SponsorsMarquee({ logos }: { logos: string[] }) {
             alt="Sponsor logo"
             width={48}
             height={48}
-            className="shrink-0 h-48 w-48"
+            draggable={false}
+            className="pointer-events-none shrink-0 h-48 w-48"
           />
         ))}
       </div>

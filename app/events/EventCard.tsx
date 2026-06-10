@@ -6,8 +6,14 @@ import { useGSAP } from "@gsap/react"
 
 import Button from "@/components/Button"
 import type { Chapter, Event } from "@/utils/events"
+import { STATES } from "@/utils/states"
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] as const
+
+// Chapter pill colours, keyed by state code. National / unknown chapters fall
+// back to the MASCA brand blue + yellow.
+const STATE_BY_CODE = Object.fromEntries(STATES.map((s) => [s.code, s]))
+const BRAND_PILL = { bg: "#010066", fg: "#FFCC00" }
 
 /** Parse Eventbrite's "local" ISO ("2026-06-12T18:00:00") into ymd/hour. */
 function parseLocal(local: string) {
@@ -58,6 +64,9 @@ export default function EventCard({ event, chapter }: { event: Event; chapter?: 
   const price = priceLabel(event)
   const soldOut = event.ticket_availability?.is_sold_out === true
 
+  const chapterCode = (chapter?.name ?? "MASCA").toUpperCase()
+  const chapterPill = STATE_BY_CODE[chapterCode] ?? BRAND_PILL
+
   return (
     <article
       ref={cardRef}
@@ -78,10 +87,14 @@ export default function EventCard({ event, chapter }: { event: Event; chapter?: 
           />
         )}
         <div className="flex items-center justify-center">
-          <span className="absolute top-4 left-4 text-xs font-bold tracking-[0.2em] text-yellow-400">
-            {(chapter?.name ?? "MASCA").toUpperCase()} CHAPTER
+          <span
+            className="absolute top-4 left-4 rounded-full px-4 py-2 text-xs font-bold tracking-wide"
+            style={{ backgroundColor: chapterPill.bg, color: chapterPill.fg }}
+            aria-label={`${chapterCode} chapter`}
+          >
+            {chapterCode}
           </span>
-          <span className="absolute top-2 right-4 rounded-full bg-yellow-400 px-4 py-2 text-xs font-bold text-blue-950">
+          <span className="absolute top-4 right-4 rounded-full bg-yellow-400 px-4 py-2 text-xs font-bold text-blue-950">
             {date}
           </span>
         </div>
