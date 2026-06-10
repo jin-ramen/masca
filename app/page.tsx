@@ -8,15 +8,15 @@ import MascaCareSection from "./sections/mascaCare";
 import MascaVoiceSection from "./sections/mascaVoice";
 import SponsorsSection from "./sections/sponsors";
 import JoinUsSection from "./sections/joinUs";
-import { getSponsorLogos } from "@/utils/sponsors";
+import { getSponsors } from "@/utils/sponsors";
 
 export const metadata: Metadata = {
   title: "Home | MASCA",
   description: "The Malaysian Students' Council of Australia (MASCA) is the official, peak student representative body for Malaysian students in Australia. Established in April 2001, it operates as a non-profit organization across six states and one territory to advocate for students' welfare, promote academic excellence, and celebrate Malaysian culture.",
 };
 
-export default function Home() {
-  const sponsors = getSponsorLogos();
+export default async function Home() {
+  const sponsors = await getSponsors();
 
   return (
    <main>

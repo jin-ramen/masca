@@ -34,20 +34,33 @@ export default async function UpcomingEvent() {
   const soldOut = event.ticket_availability?.is_sold_out === true
 
   return (
-    <div className="flex flex-col gap-5 items-start border border-blue-100/20 rounded-lg bg-blue-500 mx-8 p-10 min-w-[320px] sm:min-w-120">
-      <span className="eyebrow text-yellow-500 text-xs uppercase tracking-wider">Next Major Event</span>
-      <span className="text-white text-3xl font-bold leading-tight -mt-1">{event.name.text}</span>
-      <div className="flex flex-col gap-1 text-sm">
-        <span className="text-caption text-gray-300">
-          {location} &middot; {when}
-        </span>
-        <span className="text-caption text-gray-300">Hosted by {host}</span>
+    <div className="flex flex-col items-start border border-blue-100/20 rounded-lg bg-blue-500 mx-8 w-72 sm:w-80 overflow-hidden">
+      {/* Event banner — Eventbrite hosts logos on evbuc.com, so a plain <img>
+          avoids configuring next.config images.remotePatterns. */}
+      {event.logo?.url && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={event.logo.url}
+          alt={event.name.text}
+          className="h-32 w-full object-cover"
+        />
+      )}
+
+      <div className="flex flex-col gap-3 items-start p-6">
+        <span className="eyebrow text-yellow-500 text-xs uppercase tracking-wider">Next Major Event</span>
+        <span className="text-white text-xl font-bold leading-tight -mt-1">{event.name.text}</span>
+        <div className="flex flex-col gap-1 text-sm">
+          <span className="text-caption text-gray-300">
+            {location} &middot; {when}
+          </span>
+          <span className="text-caption text-gray-300">Hosted by {host}</span>
+        </div>
+        <a href={event.url} target="_blank" rel="noopener noreferrer" className="mt-1">
+          <Button variant="secondary" className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider">
+            {soldOut ? "Sold out" : "Register now"}
+          </Button>
+        </a>
       </div>
-      <a href={event.url} target="_blank" rel="noopener noreferrer" className="mt-2">
-        <Button variant="secondary" className="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider">
-          {soldOut ? "Sold out" : "Register now"}
-        </Button>
-      </a>
     </div>
   )
 }

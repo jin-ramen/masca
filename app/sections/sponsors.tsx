@@ -1,7 +1,8 @@
 import Button from "@/components/Button";
 import SponsorsMarquee from "@/app/sections/SponsorsMarquee";
+import type { Sponsor } from "@/utils/sponsors";
 
-export default function SponsorsSection({ sponsors }: { sponsors: string[] }) {
+export default function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
   return (
     <section className="py-24 md:py-28">
       <div className="container flex flex-col gap-4">
@@ -20,7 +21,7 @@ export default function SponsorsSection({ sponsors }: { sponsors: string[] }) {
       <div className="relative my-12">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-gray-100 to-transparent md:w-32" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-gray-100 to-transparent md:w-32" />
-        <SponsorsMarquee logos={sponsors} />
+        <SponsorsMarquee sponsors={sponsors} />
       </div>
 
       <div className="container flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">

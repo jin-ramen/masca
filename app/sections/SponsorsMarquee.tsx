@@ -1,24 +1,24 @@
 'use client'
 
 import { useRef } from "react"
-import Image from "next/image"
 import gsap from "gsap"
 import { useGSAP } from "@gsap/react";
 import { Observer } from "gsap/Observer";
 
+import type { Sponsor } from "@/utils/sponsors"
 import horizontalLoop from "@/utils/horizontalLoop"
 
 gsap.registerPlugin(Observer);
 
 const SPEED = 0.4; // idle drift (~40px/s). Lower = slower.
 
-export default function SponsorsMarquee({ logos }: { logos: string[] }) {
+export default function SponsorsMarquee({ sponsors }: { sponsors: Sponsor[] }) {
   const container = useRef<HTMLDivElement>(null);
 
   // Repeat the set until the row overflows the container — otherwise the loop
   // cycles inside a narrow zone and leaves the rest of the width empty.
-  const repeats = Math.max(2, Math.ceil(20 / Math.max(logos.length, 1)));
-  const loopItems = Array.from({ length: repeats }).flatMap(() => logos);
+  const repeats = Math.max(2, Math.ceil(20 / Math.max(sponsors.length, 1)));
+  const loopItems = Array.from({ length: repeats }).flatMap(() => sponsors);
 
   useGSAP(() => {
     const items = gsap.utils.toArray<HTMLElement>('.rail img');
@@ -72,15 +72,16 @@ export default function SponsorsMarquee({ logos }: { logos: string[] }) {
       className="scrolling-text flex w-full cursor-grab touch-pan-y select-none overflow-hidden active:cursor-grabbing"
     >
       <div className="rail flex gap-16">
-        {loopItems.map((src, i) => (
-          <Image
+        {loopItems.map((sponsor, i) => (
+          // Plain <img>: sponsor logos are remote (Notion/Cloudinary) URLs, so
+          // this avoids configuring next.config images.remotePatterns.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             key={i}
-            src={src}
-            alt="Sponsor logo"
-            width={48}
-            height={48}
+            src={sponsor.img}
+            alt={sponsor.name || "Sponsor logo"}
             draggable={false}
-            className="pointer-events-none shrink-0 h-48 w-48"
+            className="pointer-events-none shrink-0 h-48 w-48 object-contain"
           />
         ))}
       </div>

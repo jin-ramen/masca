@@ -14,6 +14,7 @@ const navLinks = [
   { name: "Events", href: "/events"},
   { name: "Welfare", href: "/care"},
   { name: "About", href: "/about"},
+  { name: "Committee", href: "/committee"},
 ]
 
 type IsActive = (href: string) => boolean
@@ -23,7 +24,7 @@ function Logo() {
   return (
     <Link href="/" className="col-1 justify-self-start relative z-20">
       <div className="flex items-center gap-4">
-        <Image src="/logo/logo.png" alt="Masca logo" width={40} height={40} priority unoptimized />
+        <Image src="/logo/logo.png" alt="Masca logo" width={40} height={40} priority unoptimized className="h-10 w-auto" />
         <div className="flex flex-col leading-none">
           <span className="text-xl font-bold tracking-wider text-blue-600">MASCA</span>
           <span className="text-xs font-semibold text-gray-700/80 uppercase">malaysian students&apos; council</span>
@@ -204,7 +205,7 @@ function SatayToggle({ open, onToggle }: { open: boolean; onToggle: () => void }
 // Centered primary navigation (desktop only).
 function DesktopNav({ isActive }: { isActive: IsActive }) {
   return (
-    <nav className="col-2 justify-self-center hidden lg:flex gap-8">
+    <nav className="col-2 justify-self-center hidden lg:flex gap-6">
       {navLinks.map((link) => {
         const active = isActive(link.href)
         return (
@@ -304,8 +305,10 @@ export default function NavBar() {
   useGSAP(() => {
     gsap.to(headerRef.current, {
       backgroundColor: 'rgba(255,255,255,0.8)',
+      // GSAP auto-applies the -webkit- prefix; setting WebkitBackdropFilter
+      // explicitly trips its "unknown property" warning, so only set the
+      // standard one (broadly supported in current browsers).
       backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
       ease: 'entranceEase',
       scrollTrigger: {
         start: 80,
