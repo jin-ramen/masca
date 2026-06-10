@@ -19,9 +19,9 @@ const footerSections: { heading: string; links: FooterLink[] }[] = [
   {
     heading: "About",
     links: [
-      { label: "Our Story", href: "/about" },
-      { label: "Leadership", href: "/" },
-      { label: "Committee", href: "/committee" },
+      { label: "Sweet Home", href: "/" },
+      { label: "Who we are", href: "/about" },
+      { label: "The People", href: "/committee" },
       { label: "Contact us", href: "/contact" },
     ],
   },
