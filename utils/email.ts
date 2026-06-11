@@ -4,14 +4,14 @@ import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_KEY)
 
-const OWNER_EMAIL = "admin@masca.org.au"
+const OWNER_EMAIL = "hello@masca.org.au"
 
 // Each contact topic pill routes a copy to the inbox that owns it.
 const TOPIC_CC: Record<string, string> = {
-  General: "admin@masca.org.au",
+  General: "exco@masca.org.au",
   Membership: "admin@masca.org.au",
   Events: "admin@masca.org.au",
-  Welfare: "admin@masca.org.au",
+  Welfare: "cares@masca.org.au",
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -102,7 +102,7 @@ export async function sendEmail(
     .join("\n")
 
   const { error } = await resend.emails.send({
-    from: "Resend <onboarding@resend.dev>",
+    from: `${name} via Website <hello@masca.org.au>`,
     to: OWNER_EMAIL,
     cc: cc ? [cc] : undefined,
     replyTo: email || undefined,

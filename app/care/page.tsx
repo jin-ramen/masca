@@ -14,7 +14,7 @@ export default function MascaCarePage() {
             The CARE
           </span>
           <p className="text-base leading-relaxed text-blue-100/80 md:text-lg max-w-xl">
-            details on MASCA CARE here
+            What is masca care? Are we able to make it more accessible here? If so, how do we do it? Chat function? 
           </p>
         </div>
       </section>
