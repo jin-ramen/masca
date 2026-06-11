@@ -8,7 +8,7 @@ const OWNER_EMAIL = "hello@masca.org.au"
 
 // Each contact topic pill routes a copy to the inbox that owns it.
 const TOPIC_CC: Record<string, string | null> = {
-  General: "exco@masca.org.au",
+  General: "admin@masca.org.au",
   Events: "exco@masca.org.au",
   Welfare: "cares@masca.org.au",
 }
