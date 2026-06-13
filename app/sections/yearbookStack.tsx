@@ -12,6 +12,7 @@ import type { CommitteeMember } from "@/utils/committee"
  * scroll and the fan spreads on hover. Decorative — the CTA button is the link.
  */
 export default function YearbookStack({ members }: { members: CommitteeMember[] }) {
+  const rootRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const hoverTl = useRef<gsap.core.Timeline | null>(null)
 
@@ -26,6 +27,7 @@ export default function YearbookStack({ members }: { members: CommitteeMember[] 
     // Rotation is symmetric around the centre card; x-spacing auto-shrinks on
     // narrow screens. Re-run on resize so the fan reflows.
     const layout = () => {
+      if (cards.length === 0) return
       const stageW = stageRef.current?.offsetWidth ?? 0
       const cardW = cards[0]?.offsetWidth ?? 0
       const step = Math.min(74, (stageW - cardW) / Math.max(n - 1, 1))
@@ -63,6 +65,7 @@ export default function YearbookStack({ members }: { members: CommitteeMember[] 
     // Deal the cards in; x/rotation are absent from the vars so the fan layout
     // set above is preserved throughout the tween.
     mm.add("(prefers-reduced-motion: no-preference)", () => {
+      if (cards.length === 0) return
       gsap.from(cards, {
         autoAlpha: 0,
         y: 60,
@@ -79,10 +82,12 @@ export default function YearbookStack({ members }: { members: CommitteeMember[] 
 
     window.addEventListener("resize", layout)
     return () => window.removeEventListener("resize", layout)
-  }, { scope: stageRef })
+    // Scope to the wrapper (not stageRef) so `.yearbook-doodle` — a sibling of
+    // the stage — stays inside the scope and the draw-in resolves it.
+  }, { scope: rootRef })
 
   return (
-    <div className="relative flex justify-center lg:justify-end">
+    <div ref={rootRef} className="relative flex justify-center lg:justify-end">
       {/* Hand-drawn nudge curling into the stack (mirrors MascaCare). */}
       <div className="pointer-events-none absolute -top-12 left-0 z-20 flex items-start gap-1 -rotate-6 md:-top-14 lg:left-4" aria-hidden>
         <span className="font-accent text-2xl leading-none text-red-600 md:text-3xl">

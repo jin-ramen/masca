@@ -27,6 +27,8 @@ export default function EventList({ events, chapters }: { events: Event[]; chapt
   const gridRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
+    // No events → no .event-card nodes; bail to avoid GSAP's "target not found".
+    if (events.length === 0) return
     gsap.from(".event-card", {
       opacity: 0,
       y: 32,

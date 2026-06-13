@@ -22,6 +22,9 @@ export default function SponsorsMarquee({ sponsors }: { sponsors: Sponsor[] }) {
 
   useGSAP(() => {
     const items = gsap.utils.toArray<HTMLElement>('.rail img');
+    // No sponsors → no rail images; skip the marquee so GSAP isn't handed an
+    // empty target (which logs "target not found").
+    if (items.length === 0) return;
 
     const tl = horizontalLoop(items, {
       repeat: -1,

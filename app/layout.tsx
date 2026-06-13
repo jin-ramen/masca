@@ -20,48 +20,50 @@ import {
 const montserrat = localFont({
   src: [
     {
-      path: "./fonts/Montserrat-VariableFont_wght.ttf",
+      path: "./fonts/Montserrat-VariableFont_wght.woff2",
       style: "normal",
     },
     {
-      path: "./fonts/Montserrat-Italic-VariableFont_wght.ttf",
+      path: "./fonts/Montserrat-Italic-VariableFont_wght.woff2",
       style: "italic",
     },
   ],
   variable: "--font-montserrat",
-   preload: false,
+  // Body font: preload so it downloads immediately and the FOUT swap window
+  // stays short even on slow connections.
+  preload: true,
 });
 
 // 2. Crimson Text (Secondary Font - Array of all static weight and style files)
 const crimsonText = localFont({
   src: [
     {
-      path: "./fonts/CrimsonText-Regular.ttf",
+      path: "./fonts/CrimsonText-Regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./fonts/CrimsonText-Italic.ttf",
+      path: "./fonts/CrimsonText-Italic.woff2",
       weight: "400",
       style: "italic",
     },
     {
-      path: "./fonts/CrimsonText-SemiBold.ttf",
+      path: "./fonts/CrimsonText-SemiBold.woff2",
       weight: "600",
       style: "normal",
     },
     {
-      path: "./fonts/CrimsonText-SemiBoldItalic.ttf",
+      path: "./fonts/CrimsonText-SemiBoldItalic.woff2",
       weight: "600",
       style: "italic",
     },
     {
-      path: "./fonts/CrimsonText-Bold.ttf",
+      path: "./fonts/CrimsonText-Bold.woff2",
       weight: "700",
       style: "normal",
     },
     {
-      path: "./fonts/CrimsonText-BoldItalic.ttf",
+      path: "./fonts/CrimsonText-BoldItalic.woff2",
       weight: "700",
       style: "italic",
     },
@@ -72,7 +74,7 @@ const crimsonText = localFont({
 
 // 3. Brusher (Accent Script Font)
 const brusher = localFont({
-  src: "./fonts/Brusher.ttf",
+  src: "./fonts/Brusher.woff2",
   variable: "--font-brusher",
    preload: false,
 });

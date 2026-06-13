@@ -24,6 +24,9 @@ export default function EventShowcaseGrid({
 
   useGSAP(
     () => {
+      // Skip the reveal when there are no cards — otherwise the selector
+      // matches nothing and GSAP logs a "target not found" warning.
+      if (events.length === 0) return
       gsap.from(".event-card", {
         opacity: 0,
         y: 24,

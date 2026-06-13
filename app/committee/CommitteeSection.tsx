@@ -30,6 +30,8 @@ export default function CommitteeSection({
   // Staggered reveal as the grid scrolls into view; re-runs on year change so
   // a freshly-filtered set animates in too.
   useGSAP(() => {
+    // The active year may have no members; skip to avoid a "target not found".
+    if (visible.length === 0) return
     gsap.from(".member-card", {
       opacity: 0,
       y: 32,
