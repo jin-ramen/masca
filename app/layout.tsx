@@ -12,6 +12,7 @@ import { getCastPeeps } from "@/utils/casts";
 import {
   SITE_URL,
   SITE_NAME,
+  SITE_NAME_FULL,
   SITE_SHORT_NAME,
   SITE_DESCRIPTION,
   SITE_SOCIALS,
@@ -99,8 +100,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: SITE_NAME,
-    title: SITE_NAME,
+    siteName: SITE_NAME_FULL,
+    title: SITE_NAME_FULL,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     locale: "en_AU",
@@ -130,17 +131,38 @@ export default function RootLayout({
 }>) {
   const peeps = getCastPeeps();
 
-  const organizationJsonLd = {
+  // One @graph holding two linked entities:
+  //  - WebSite  → drives the site name Google renders for the homepage. Its
+  //    single `name` is the full form with the acronym baked in, so the only
+  //    site name Google can show is the complete title. We deliberately do NOT
+  //    give the WebSite an `alternateName: "MASCA"`, which would invite Google
+  //    to display the bare acronym.
+  //  - Organization (NGO) → the entity for the Knowledge Graph. Here the
+  //    `alternateName: "MASCA"` is correct and useful for entity recognition.
+  const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "NGO",
-    name: SITE_NAME,
-    alternateName: SITE_SHORT_NAME,
-    url: SITE_URL,
-    logo: `${SITE_URL}/icon.png`,
-    description: SITE_DESCRIPTION,
-    foundingDate: "2001-04",
-    areaServed: "AU",
-    sameAs: SITE_SOCIALS,
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: SITE_NAME_FULL,
+        url: SITE_URL,
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        inLanguage: "en-AU",
+      },
+      {
+        "@type": "NGO",
+        "@id": `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        alternateName: SITE_SHORT_NAME,
+        url: SITE_URL,
+        logo: `${SITE_URL}/icon.png`,
+        description: SITE_DESCRIPTION,
+        foundingDate: "2001-04",
+        areaServed: "AU",
+        sameAs: SITE_SOCIALS,
+      },
+    ],
   };
 
   return (
@@ -152,7 +174,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationJsonLd),
+            __html: JSON.stringify(jsonLd),
           }}
         />
         <GsapInitializer />

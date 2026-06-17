@@ -49,12 +49,21 @@ function MainContent() {
         founded 2001 &middot; 6 states &middot; 1 territory
       </span>
       <h1 className="text-white text-5xl md:text-6xl lg:text-7xl">
-        A home for <br /> Malaysians <br /> studying <span className="inAustralia invisible opacity-0"><InAustralia /></span>
+        {/* Full brand name in the heading for crawlers and screen readers; the
+            creative line below is the visible treatment. */}
+        <span className="sr-only">
+          Malaysian Students&apos; Council of Australia (MASCA)
+        </span>
+        <span aria-hidden="true">
+          A home for <br /> Malaysians <br /> studying{" "}
+          <span className="inAustralia invisible opacity-0"><InAustralia /></span>
+        </span>
       </h1>
       <p className="text-gray-300">
-        MASCA is the peak student representative body for Malaysians across
-        Australia — built by students, for students. Selamat datang, and welcome
-        home.
+        The <strong className="font-semibold">Malaysian Students&apos; Council
+        of Australia (MASCA)</strong> is the peak student representative body for
+        Malaysians across Australia — built by students, for students. Selamat
+        datang, and welcome home.
       </p>
       <div className="flex gap-4">
         <Button href="/events" variant="accent">

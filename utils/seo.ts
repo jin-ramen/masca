@@ -11,6 +11,14 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://www.masca.org.au";
 export const SITE_NAME = "Malaysian Students' Council of Australia";
 export const SITE_SHORT_NAME = "MASCA";
+/**
+ * The exact string we want Google to render as the site name in search
+ * results. Bundling the acronym into one name (rather than offering "MASCA"
+ * as a separate alternateName for the site) makes the full form the single
+ * thing Google can display for the homepage. Used for the homepage <title>,
+ * og:site_name and the WebSite schema's `name`.
+ */
+export const SITE_NAME_FULL = `${SITE_NAME} (${SITE_SHORT_NAME})`;
 export const SITE_DESCRIPTION =
   "The Malaysian Students' Council of Australia (MASCA) is the official, peak representative body for Malaysian students across Australia since April 2001.";
 
