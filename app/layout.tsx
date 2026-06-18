@@ -16,6 +16,7 @@ import {
   SITE_SHORT_NAME,
   SITE_DESCRIPTION,
   SITE_SOCIALS,
+  SITE_NAV,
 } from "@/utils/seo";
 
 // 1. Montserrat (Primary Variable Font - Split into Roman and Italic files)
@@ -162,6 +163,16 @@ export default function RootLayout({
         areaServed: "AU",
         sameAs: SITE_SOCIALS,
       },
+      // Main navigation hint: exposes the key sections to crawlers. Mirrors the
+      // visible header (components/NavBar.tsx). A hint only — sitelinks remain
+      // algorithmic and cannot be forced by markup.
+      ...SITE_NAV.map((item, i) => ({
+        "@type": "SiteNavigationElement",
+        "@id": `${SITE_URL}/#nav-${i + 1}`,
+        position: i + 1,
+        name: item.name,
+        url: `${SITE_URL}${item.path}`,
+      })),
     ],
   };
 
